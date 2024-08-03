@@ -51,7 +51,7 @@ class Sort {    // sortNum : 0 = code, 1 = date, 2 = maximum, 3 = remain
     public static int[][] selectionSort(int[][] data, int sortIdx){
         
         int n = data.length;
-        // int[][] result = new int[n][4];
+        int[][] result = new int[n][4];
         for (int i = 0; i < n; i++){
             int minIdx = i;
 			for (int j = i+1; j < n; j++) {
@@ -59,20 +59,20 @@ class Sort {    // sortNum : 0 = code, 1 = date, 2 = maximum, 3 = remain
 					minIdx = j;
             }
             // 추가
-            int[] tmp = data[i];
-            data[i] = data[minIdx];
-            data[minIdx] = tmp;
-            // for (int k = 0; k < 4; k++){
-            // int tmp = data[i][k];
-            // data[i][k] = data[minIdx][k];
-            // data[minIdx][k] = tmp;
-            // }
+            // int[] tmp = data[i];
+            // data[i] = data[minIdx];
+            // data[minIdx] = tmp;
+            for (int k = 0; k < 4; k++){
+            int tmp = data[i][k];
+            data[i][k] = data[minIdx][k];
+            data[minIdx][k] = tmp;
+            }
         }
-        // for (int i = 0; i < n; i++){
-        //     for (int j = 0; j < 4; j++){
-        //         result[i][j] = data[i][j];
-        //     }
-        // }
+        for (int i = 0; i < n; i++){
+            for (int j = 0; j < 4; j++){
+                result[i][j] = data[i][j];
+            }
+        }
         
         return data;
     }
