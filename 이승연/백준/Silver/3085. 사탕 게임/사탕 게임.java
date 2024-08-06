@@ -1,22 +1,30 @@
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class Main {
 
 	public static void main(String[] args) throws Exception {
 		
-		 Scanner sc = new Scanner(System.in);
-		
-		 int N = sc.nextInt();
+		 new Main().solution();
 		 
-		 String[][] board = new String[N][N];
+	}
+	
+	public void solution() throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		
+		int N = Integer.parseInt(br.readLine());
+		
+		String[][] board = new String[N][N];
 		 
 		 // 상 하 좌 우 델타 배열
 		 int[] dx = {-1, 1, 0, 0};
 		 int[] dy = {0, 0, -1, 1};
 		 
 		 for (int r = 0; r < N; r++) {
-			 board[r] = sc.next().split("");
+			 board[r] = br.readLine().split("");
 		 }
 		 
 		 int max = 1;
@@ -92,8 +100,9 @@ public class Main {
 			 }
 		 }
 		 
-		 // System.out.println(Arrays.deepToString(board));
-		 System.out.println(max);
+		 bw.write(String.valueOf(max));
+		 bw.newLine();
+		 bw.close();
 	}
 	
 	public static int getMaxLength(String[][] board, int x, int y, int nx, int ny) {
