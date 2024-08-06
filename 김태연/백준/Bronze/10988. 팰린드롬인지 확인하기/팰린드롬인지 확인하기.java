@@ -8,7 +8,7 @@ class Main {
  
 		String line = sc.next();
 		int result = 1;
-		for (int i=0; i<line.length(); i++) {
+		for (int i=0; i<line.length() / 2; i++) {
 			if (!(line.charAt(i) == line.charAt(line.length() - i -1))) {
 				result = 0;
 				break;
