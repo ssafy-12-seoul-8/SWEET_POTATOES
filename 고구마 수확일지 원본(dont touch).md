@@ -32,7 +32,7 @@
     <tr>
     <tr>
       <td>1일</td>
-      <td><a href="#">문제 1</a></td>
+      <td><a href="">문제 1</a></td>
       <td><a href="#">문제 2</a></td>
       <td><a href="#">문제 1</a></td>
       <td><a href="#">문제 2</a></td>
