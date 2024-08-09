@@ -1,5 +1,6 @@
-import java.io.File;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 class Solution
 {
@@ -8,21 +9,23 @@ class Solution
 	static char[][] array;
 	public static void main(String args[]) throws Exception
 	{
-		Scanner sc = new Scanner(System.in);
-		int T;
-		T=sc.nextInt();
+//		Scanner sc = new Scanner(new File("input.txt"));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		int T = Integer.parseInt(br.readLine());
 
+		StringBuilder sb = new StringBuilder();
 		for(int test_case = 1; test_case <= T; test_case++)
 		{
 		
-
-			N = sc.nextInt();	// 3 <= N,M <= 50
-			M = sc.nextInt();		// 가로 길이
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			N = Integer.parseInt(st.nextToken());
+			M = Integer.parseInt(st.nextToken());
 			
 			array = new char[N][M];	// 배열 초기화
 			
 			for (int i=0; i<N; i++) {
-				String line = sc.next();
+				String line = br.readLine();
 				for (int j=0; j<M; j++) {
 					array[i][j] = line.charAt(j);
 				}
@@ -64,8 +67,9 @@ class Solution
 			
 //			System.out.println(Arrays.deepToString(array));
 			
-			System.out.println("#" + test_case + " " + min);
+			sb.append("#").append(test_case).append(" ").append(min).append("\n");
 		}
+		System.out.println(sb);
 	}
 	
 	// 0번줄부터 startIdx번 줄 까지 흰색으로 색칠함
