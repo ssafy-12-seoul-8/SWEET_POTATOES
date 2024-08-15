@@ -50,7 +50,7 @@ class Solution
 					O.time = O.time + moveTime + 1;
 					
 					// 전에 B가 버튼을 누른 경우
-					time = Math.max(moveTime, time) + 1;
+					time = time + 1;
 					
 					time = Math.max(time, O.time);
 					
@@ -71,7 +71,7 @@ class Solution
 					B.time = B.time + moveTime +1;
 					
 					// 전에 O가 버튼을 누른 경우
-					time = Math.max(moveTime, time) + 1;
+					time = time + 1;
 					
 					time = Math.max(time, B.time);
 					
