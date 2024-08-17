@@ -46,10 +46,10 @@ class Solution
 					
 					O.idx = btn;
 					
-					// 전에 O가 버튼을 누른 경우
+					// 전의 로봇이 버튼을 눌렀거나, 전의 로봇이 자기 자신인 경우
 					O.time = O.time + moveTime + 1;
 					
-					// 전에 B가 버튼을 누른 경우
+					// 전의 로봇이 아직 버튼을 누르지 않았을 경우
 					time = time + 1;
 					
 					time = Math.max(time, O.time);
@@ -67,10 +67,10 @@ class Solution
 					
 					B.idx = btn;
 					
-					// 전에 B가 버튼을 누른 경우
+					// 전의 로봇이 버튼을 눌렀거나, 전의 로봇이 자기 자신인 경우
 					B.time = B.time + moveTime +1;
 					
-					// 전에 O가 버튼을 누른 경우
+					// 전의 로봇이 아직 버튼을 누르지 않았을 경우
 					time = time + 1;
 					
 					time = Math.max(time, B.time);
