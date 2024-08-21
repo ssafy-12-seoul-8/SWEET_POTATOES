@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-//import java.util.Scanner;
 
 public class Solution {
 
@@ -13,28 +12,23 @@ public class Solution {
 
 	public static void main(String[] args) throws IOException {
 
-//		 Scanner sc = new Scanner(System.in);
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int T = Integer.parseInt(br.readLine());
 
+		
 		for (int test_case = 1; test_case <= T; test_case++) {
-			isPassed = false;
-			// 두께 D
-			// 가로크기 W
-			// 합격기준 K 가 주어진다.
-//			 	
-//			int D = sc.nextInt();	// 두께 6
-//			int W = sc.nextInt();	// 가로 8
-//			int K = sc.nextInt();	// 합격 3
+			
+			isPassed = false;	// 초기화
 
+			
 			String[] secondInput = br.readLine().split(" ");
-			D = Integer.parseInt(secondInput[0]);
-			W = Integer.parseInt(secondInput[1]);
-			K = Integer.parseInt(secondInput[2]);
+			D = Integer.parseInt(secondInput[0]); // 두께 6
+			W = Integer.parseInt(secondInput[1]); // 가로 8
+			K = Integer.parseInt(secondInput[2]); // 합격 3
 
 			arr = new int[D][W];
 
-			// A : 0, B : 1
+			// A 를 1로, B를 2로 바꿔서 저장함 ( 투약하지 않는 경우를 0으로 만들기 위함 ) 
 			for (int i = 0; i < D; i++) {
 				String[] line = br.readLine().split(" ");
 				for (int j = 0; j < W; j++) {
@@ -44,9 +38,9 @@ public class Solution {
 
 			int chance = 0;
 
-			// 첫 번째 인수는 'n' 번 줄에 어떤 약물을 넣고, 앞으로 몇번 더 약물을 넣을 수 있는지?
-			// 두 번째 인수는 n 번 줄에 '어떤 약물'을 넣고, 앞으로 몇번 더 약물을 넣을 수 있는지?
-			// 세 번째 인수는 n 번 줄에 어떤 약물을 넣고, 앞으로 '몇번' 더 약물을 넣을 수 있는지?
+			// 첫 번째 인수는 'n' 번 줄에 어떤 약물을 넣고, 앞으로 몇 번 더 약물을 넣을 수 있는지?
+			// 두 번째 인수는 n 번 줄에 '어떤 약물'을 넣고, 앞으로 몇 번 더 약물을 넣을 수 있는지?
+			// 세 번째 인수는 n 번 줄에 어떤 약물을 넣고, 앞으로 '몇 번' 더 약물을 넣을 수 있는지?
 
 			// isPassed = true 가 될 때 까지 실행함
 			if (check(arr))
@@ -98,7 +92,8 @@ public class Solution {
 				}
 
 			}
-			// 한 줄 검사가 끝난 시점.
+			// 세로 한 줄 검사가 끝난 시점.
+			// 오른쪽으로 한칸 이동.
 			// 이번 검사가 통과하지 못했다면 바로 false 반환
 			if (!lineChecked)
 				return false;
@@ -109,38 +104,55 @@ public class Solution {
 		return true;
 	}
 
-	// 몇번 위치에 약물을 넣을지를 정해보자
-	// chance : 몇번이나 약물을 투약할지.
-	// array[] : 약물을 투약할 위치를 저장하는 배열
+	
+	// 'n' 번 줄에 '어떤 약물'을 넣고, 앞으로 '몇 번' 더 약물을 넣을 수 있는지?
+	// row : '몇 번재 줄'
+	// drugType : '어떤 약물'
+	// chance : 약물 투약 가능 횟수(= 남은 횟수)
+	// array[][] : 추적하고있는 전체 배열
 	static void btk(int row, int drugType, int chance , int[][] array) {
 
+		// 기저조건 1. 남은 횟수가 0이면 검사하고 종료
 		if (chance == 0) {
 			check(array);
 			return;
 		}
+		
+		// 기저조건 2. 이미 통과했다면 종료
 		if (isPassed)
 			return;
+		
+		// 기저조건 3. 가능성이 없으면 종료 (남은 줄보다, 남은 약물이 더 많은 경우)
 		if (chance > D - row + 1)
-			return; // 가능성이 없는 함수 제거
+			return; 
+		
+		// 기저조건 4. 범위를 벗어나면 종료
 		if (row == D)
-			return; // boundary 를 넘어가면 취소한다.
+			return; 
 
-		// row 에 약물을 떨어뜨리는 경우
+		
+		// 임시 배열 복사 (원복하기 위해서)
 		int[] temp = new int[W];
 		for (int i=0; i<W; i++) {
 			temp[i] = array[row][i];
 		}
 		
+		// 시행 : row 에 약물을 떨어뜨림
 		if (drugType != 0) {
 			dropDrug(row , drugType, array);
 			chance--;
 		}
 		
+		// 추적 1. 다음번에는 약물 안떨어뜨리는 경우 
 		btk(row+1, 0, chance, array);
+
+		// 추적 2. 다음번에는 약물 A를 떨어뜨리는 경우 
 		btk(row+1, 1, chance, array);
+		
+		// 추적 3. 다음번에는 약물 B를 떨어뜨리는 경우 
 		btk(row+1, 2, chance, array);
+
 		// 원상복귀
 		array[row] = temp;
-		
 	}
 }
