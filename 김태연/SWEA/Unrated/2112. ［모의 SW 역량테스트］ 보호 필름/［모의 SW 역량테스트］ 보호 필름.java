@@ -28,11 +28,10 @@ public class Solution {
 
 			arr = new int[D][W];
 
-			// A 를 1로, B를 2로 바꿔서 저장함 ( 투약하지 않는 경우를 0으로 만들기 위함 ) 
 			for (int i = 0; i < D; i++) {
 				String[] line = br.readLine().split(" ");
 				for (int j = 0; j < W; j++) {
-					arr[i][j] = Integer.parseInt(line[j]) + 1;
+					arr[i][j] = Integer.parseInt(line[j]) + 1; // A 를 1로, B를 2로 바꿔서 저장함 ( 투약하지 않는 경우를 0으로 만들기 위함 ) 
 				}
 			}
 
@@ -41,13 +40,12 @@ public class Solution {
 			// 첫 번째 인수는 'n' 번 줄에 어떤 약물을 넣고, 앞으로 몇 번 더 약물을 넣을 수 있는지?
 			// 두 번째 인수는 n 번 줄에 '어떤 약물'을 넣고, 앞으로 몇 번 더 약물을 넣을 수 있는지?
 			// 세 번째 인수는 n 번 줄에 어떤 약물을 넣고, 앞으로 '몇 번' 더 약물을 넣을 수 있는지?
-
-			// isPassed = true 가 될 때 까지 실행함
+			
 			if (check(arr))
 				System.out.println("#" + test_case + " " + chance);
 			else {
 
-				while (!isPassed) {
+				while (!isPassed) {					// isPassed = true 가 될 때 까지 실행함
 					chance++;
 					btk(0, 0, chance, arr);
 					btk(0, 1, chance, arr);
@@ -61,46 +59,38 @@ public class Solution {
 	}
 
 	// 투약하는 메서드
-	// 주의 : 투약은 가로로 한다.
 	static void dropDrug(int row, int drugType ,int[][] array) {
-		for (int j = 0; j < W; j++) {
+		for (int j = 0; j < W; j++) {				// 주의 : 투약은 가로로 한다.
 			array[row][j] = drugType;
 		}
 	}
 
-	// 2차원 배열 전체 검사하기
-	static boolean check(int[][] changedArray) {
-
+	
+	static boolean check(int[][] changedArray) {	// 2차원 배열 전체 검사하기
 		int count = 0;
-		// 바깥 for문 : column 변경
-		for (int j = 0; j < W; j++) {
+		
+		for (int j = 0; j < W; j++) {				// 바깥 for문 : column 변경
 			boolean lineChecked = false;
 			count = 1; // column 바꿀때마다 count 초기화
 
-			// 내부 for문 : row 변경
-			for (int i = 1; i < D; i++) {
+			
+			for (int i = 1; i < D; i++) {			// 내부 for문 : row 변경
 				if (changedArray[i][j] == changedArray[i - 1][j]) {
 					count++;
 				} else {
 					count = 1;
 				}
-
-				// 세로줄에서 count가 K에 도달하면, 즉 테스트를 통과하면 다음 라인으로 바로 넘어간다.
-				if (count == K) {
+				
+				if (count == K) {					// 세로줄에서 count가 K에 도달하면, 즉 테스트를 통과하면 다음 라인으로 바로 넘어간다.
 					lineChecked = true;
 					break;
 				}
-
 			}
-			// 세로 한 줄 검사가 끝난 시점.
-			// 오른쪽으로 한칸 이동.
-			// 이번 검사가 통과하지 못했다면 바로 false 반환
-			if (!lineChecked)
+			// 세로 한 줄 검사가 끝난 시점, 오른쪽으로 한칸 이동.
+			if (!lineChecked)						// 이번 검사가 통과하지 못했다면 바로 false 반환				
 				return false;
 		}
-
-		// 모든 검사가 끝날때까지 return이 일어나지 않았다면, 즉 모든 검사가 통과했다면 true 반환
-		isPassed = true;
+		isPassed = true;							// 모든 검사가 끝날때까지 return이 일어나지 않았다면, 즉 모든 검사가 통과했다면 true 반환
 		return true;
 	}
 
