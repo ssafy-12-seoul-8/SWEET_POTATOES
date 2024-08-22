@@ -4,6 +4,14 @@
 
 - 매주 CS 주제를 선정해 각자 공부 후 준비한 개별 질문에 답하여 CS지식을 함양
 
+## 참고 레포지토리
+
+- cs 전체 구조 잡기 좋은 레포
+  https://github.com/gyoogle/tech-interview-for-developer
+
+- cs 질문 참고하기 좋은 레포
+  https://github.com/JaeYeopHan/Interview_Question_for_Beginner
+
 ## 구성원 및 스터디장
 
 | 이름   | 역할   |
