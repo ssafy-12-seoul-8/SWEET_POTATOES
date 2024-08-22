@@ -1,40 +1,42 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
-class Solution
-{
-	public static void main(String args[]) throws Exception
-	{
+public class Solution {
+
+	public static void main(String[] args) throws IOException {
+
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T;
 		StringBuilder sb = new StringBuilder();
-//		StringTokenizer st;
 
-		T = Integer.parseInt(br.readLine());
-		for(int test_case = 1; test_case <= T; test_case++)
-		{
-		
-			// 한줄 다 받음.
+		int T = Integer.parseInt(br.readLine());
+
+		for (int tc = 1; tc <= T; tc++) {
+
 			String line = br.readLine();
+			
+			int N = line.length();
+			boolean[] memory = new boolean[N];
+			
+			// 배열 입력받기 : 1일때 true, 0일때 false
+			for (int i=0; i<N; i++) {
+				int input = line.charAt(i) - '0';
+				if (input == 1) memory[i] = true;
+			}
 
-			int[] array = new int[line.length()];
+			boolean toggle = true;
 			int count = 0;
-			// 배열에 값 입력하기
-			for (int i=0; i<line.length(); i++) {
-				array[i] = line.charAt(i) - '0';
+			for (int i=0; i<N; i++) {
+				if (memory[i] == toggle) {
+					count++;
+					toggle = !toggle;
+				}
 			}
 			
-			if (array[0] == 1) count++;
-			for (int i=0; i < array.length - 1; i++) {
-				if (array[i+1] != array[i]) count++;
-			}
-			
-			sb.append("#").append(test_case).append(" ").append(count).append("\n");
-			
-			// 뒤에서부터 보는게 중요할것같음 ( 뒤에서부터 통일하기 때문에)
-			// 앞에서부터 봐도 상관없는것 같네.. 앞에서부터 풀어보자
-			
+
+			sb.append("#").append(tc).append(" ").append(count).append("\n");
 		}
+
 		System.out.println(sb);
 	}
 }
