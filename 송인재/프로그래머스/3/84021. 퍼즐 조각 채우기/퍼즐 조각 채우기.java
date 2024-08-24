@@ -111,7 +111,6 @@ class Solution {
     }
     
     int fillBlanks() {
-        boolean[] usedShapes = new boolean[shapes.size()];
         boolean[] filledBlanks = new boolean[blanks.size()];
         int size = 0;
         
@@ -123,24 +122,30 @@ class Solution {
                     continue;
                 }
                 
-                Shape blank = blanks.get(j);
+                int afterTrial = tryRotation(filledBlanks, shape, j, size);
                 
-                for (int k = 0; k < 4; k++) {
-                    if (shape.isPossible(blank)) {
-                        filledBlanks[j] = true;
-                        usedShapes[i] = true;
-                        size += shape.shapeSize;
-                        
-                        break;
-                    }
+                if (afterTrial > size) {
+                    size = afterTrial;
                     
-                    shape = shape.turnClockwise();
-                }
-                
-                if (usedShapes[i]) {
                     break;
                 }
             }
+        }
+        
+        return size;
+    }
+    
+    int tryRotation(boolean[] filledBlanks, Shape shape, int blankIndex, int size) {
+        Shape blank = blanks.get(blankIndex);
+        
+        for (int i = 0; i < 4; i++) {
+            if (shape.isPossible(blank)) {
+                filledBlanks[blankIndex] = true;
+                
+                return size += shape.shapeSize;
+            }
+            
+            shape = shape.turnClockwise();
         }
         
         return size;
