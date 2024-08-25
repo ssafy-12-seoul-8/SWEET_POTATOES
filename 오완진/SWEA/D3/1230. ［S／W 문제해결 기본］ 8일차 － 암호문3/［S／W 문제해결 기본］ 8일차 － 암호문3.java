@@ -1,50 +1,125 @@
-import java.util.LinkedList;
 import java.util.Scanner;
 
-public class Solution {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        
-        for (int tc = 1; tc <= 10; tc++) {
+class Node {
+    String data;
+    Node link;
+}
 
-        	LinkedList<Integer> amho = new LinkedList<>();
-        	// 원본 암호문 입력
-        	int N = sc.nextInt();
-        	for (int n = 0; n < N; n++) {
-        		amho.add(sc.nextInt());
-        	}
-        	// 명령어 입력
-        	int M = sc.nextInt();
-        	sc.nextLine();
-        	for (int m = 0; m < M; m++) {
-        		char ch = sc.next().charAt(0);
-        		if (ch == 'I') {			// I : 삽입
-            		int X = sc.nextInt();	// 원본 암호문에 삽입할 인덱스
-            		int Y = sc.nextInt();	// 원본 암호문에 삽입할 숫자 개수
-            		for (int y = 0; y < Y; y++) {
-            			amho.add(X+y, sc.nextInt());
-            		}
-        		} else if (ch == 'A') {		// A : 추가
-        			int Y = sc.nextInt();	// 원본 암호문에 추가할 숫자 개수
-        			for (int y = 0; y < Y; y++) {
-        				amho.addLast(sc.nextInt());
-        			}
-        		} else {					// D : 삭제
-            		int X = sc.nextInt();	// 원본 암호문에 삭제할 인덱스
-            		int Y = sc.nextInt();	// 원본 암호문에 삭제할 숫자 개수
-            		for (int y = 0; y < Y; y++) {
-            			amho.remove(X);
-            		}
-        		}
-        	}
-        	
-        	System.out.print("#" + tc + " ");
-        	for (int n = 0; n < 10; n++) {
-        		System.out.print(amho.get(n) + " ");
-        	}
-        	System.out.println();
-        	
+class LinkedList {
+    Node head;
+    int size;
+
+    LinkedList() {
+        head = new Node();
+    }
+
+    void insertData(int x, int y, Scanner scanner) {
+        if (x < 0 || x > size) {
+            return;
         }
-        
+
+        Node curr = head;
+        for (int k = 0; k < x; k++) {
+            curr = curr.link;
+        }
+
+        for (int i = 0; i < y; i++) {
+            size++;
+
+            Node newNode = new Node();
+            newNode.data = scanner.next();
+
+            newNode.link = curr.link;
+            curr.link = newNode;
+
+            curr = newNode;
+        }
+    }
+
+    void deleteData(int x, int y) {
+        if (x < 0 || x + y > size) {
+            return;
+        }
+
+        Node curr = head;
+        for (int k = 0; k < x; k++) {
+            curr = curr.link;
+        }
+
+        for (int k = 0; k < y; k++) {
+            size--;
+            curr.link = curr.link.link;
+        }
+    }
+
+    void addData(int y, Scanner scanner) {
+        Node curr = head;
+        for (int k = 0; k < size; k++) {
+            curr = curr.link;
+        }
+
+        for (int k = 0; k < y; k++) {
+            size++;
+
+            Node newNode = new Node();
+            newNode.data = scanner.next();
+
+            newNode.link = curr.link;
+            curr.link = newNode;
+
+            curr = newNode;
+        }
+    }
+
+    void printData() {
+        Node curr = head.link;
+
+        for (int i = 0; i < 10; i++) {
+            if (curr == null) break;
+            System.out.print(curr.data + " ");
+            curr = curr.link;
+        }
+        System.out.println();
+    }
+}
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        for (int tc = 1; tc <= 10; tc++) {
+            int n = scanner.nextInt();
+            LinkedList amho = new LinkedList();
+
+            for (int i = 0; i < n; i++) {
+                amho.addData(1, scanner);
+            }
+
+            int m = scanner.nextInt();
+
+            for (int i = 0; i < m; i++) {
+                String command = scanner.next();
+
+                if (command.equals("I")) {
+                    int x = scanner.nextInt();
+                    int y = scanner.nextInt();
+                    amho.insertData(x, y, scanner);
+
+                } else if (command.equals("D")) {
+                    int x = scanner.nextInt();
+                    int y = scanner.nextInt();
+                    amho.deleteData(x, y);
+
+                } else if (command.equals("A")) {
+                    int y = scanner.nextInt();
+                    amho.addData(y, scanner);
+                }
+            }
+
+            System.out.print("#" + tc + " ");
+            amho.printData();
+        }
+
     }
 }
