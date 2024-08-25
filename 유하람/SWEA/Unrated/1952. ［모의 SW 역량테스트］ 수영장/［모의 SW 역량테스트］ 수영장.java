@@ -34,9 +34,9 @@ class Solution
 				plan[i] = Integer.parseInt(st2.nextToken());
 			}
 			
-			answer = 3000*12;
+			int[] price = new int[13]; 							// 최소 가격 넣을 배열
 			
-			btk(day, month, tMonth, year, plan, 1, 0);
+			int answer = DP(day, month, tMonth, year, plan, price);
 			
 			sb.append("#").append(tc).append(" ").append(answer).append("\n");
 		}
@@ -47,24 +47,26 @@ class Solution
 	}
     
     // day, month, tMonth, year, plan은 입력값
-	// 전역 변수 answer는 원하는 답. 계획대로 수영장을 이용하는 경우 중 가장 적게 지출하는 비용
-	// m은 기준 달. plan에서 인덱스로 활용
-	// sum은 비용
-	static void btk(int day, int month, int tMonth, int year, int[] plan, int m, int sum) {
+	// price는 각 달의 최소 비용 저장할 배열
+	static int DP(int day, int month, int tMonth, int year, int[] plan, int[] price) {
 		
-		if(m>12) {
-			answer = Math.min(answer, sum);
-			return;
+		for(int m=1 ; m<13 ; m++) {
+			// 1일권
+			int sum = price[m-1] + plan[m]*day;
+			// 한달권
+			sum = Math.min(sum, price[m-1]+month);
+			// 3개월 권
+			if(m>=3) {
+				sum = Math.min(sum, price[m-3]+tMonth);
+			}
+			// 12개월 권
+			if(m>=12) {
+				sum = Math.min(sum, year);
+			}
+			
+			price[m] = sum;
+			
 		}
-		
-		// m월에 1일권 사용하는 경우
-		btk(day, month, tMonth, year, plan, m+1, sum + plan[m]*day);
-		// m월에 한달권 사용하는 경우
-		btk(day, month, tMonth, year, plan, m+1, sum + month);
-		// m월에 3개월권 사용하는 경우
-		btk(day, month, tMonth, year, plan, m+3, sum + tMonth);
-		// m월에 1년 이용권 사용하는 경우
-		btk(day, month, tMonth, year, plan, m+12, sum + year);
-		
+		return price[12];
 	}
 }
