@@ -8,18 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
-class Point {
-	int x;
-	int y;
-	
-	Point(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-}
-
-// 백트래킹 + 조합
-
 public class Main {
 
 	static int N;
