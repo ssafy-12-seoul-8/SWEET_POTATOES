@@ -26,8 +26,8 @@ public class Solution {
 			}
 			
 			combination(0,0);
-			
 			System.out.println("#" + test_case + " " + result);
+			
 			
 		}
 	}
@@ -37,11 +37,14 @@ public class Solution {
 		// 사용하는 숫자가 4개가 초과하면 그만둔다
 		
 		if (sum == K)  {	// 합에 도달하면 그만둔다.
-			result++; 
+			result++;
 			return;
-		}
+		} else if (sum > K) {
+            return;
+        }
 		
 		if (index == N) {
+//			System.out.println("종료합니다");
 			return;
 		}
 		
@@ -49,6 +52,7 @@ public class Solution {
 		// index 번째 값을 쓰는 경우
 		sum += arr[index];
 		combination(index+1, sum);
+		
 		
 		// index 번째 값을 쓰지 않는 경우
 		sum -= arr[index];
