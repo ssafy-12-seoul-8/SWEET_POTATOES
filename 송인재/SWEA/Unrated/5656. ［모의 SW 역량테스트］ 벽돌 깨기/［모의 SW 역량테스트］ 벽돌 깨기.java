@@ -10,6 +10,7 @@ public class Solution {
 	static int n, w, h, min, total;
 	static int[][] map;
 	static int[] level;
+	static boolean[][] visited;
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -24,6 +25,7 @@ public class Solution {
 			level = new int[w];
 			min = Integer.MAX_VALUE;
 			total = 0;
+			visited = new boolean[h][w];
 			
 			for (int i = 0; i < w; i++) {
 				level[i] = h;
@@ -84,7 +86,6 @@ public class Solution {
 	}
 	
 	static int crash(int[][] board, int row, int col) {
-		boolean[][] visited = new boolean[h][w];
 		visited[row][col] = true;
 		
 		queue.add(new int[] { row, col });
@@ -125,6 +126,7 @@ public class Solution {
 					}
 					
 					board[i][j] = 0;
+					visited[i][j] = false;
 				}
 			}
 		}
