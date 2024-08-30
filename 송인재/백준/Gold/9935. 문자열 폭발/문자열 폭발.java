@@ -11,49 +11,36 @@ public class Main {
 				.toCharArray();
 		bomb = br.readLine()
 				.toCharArray();
-		Deque<Character> stack = new ArrayDeque<>();
-		Deque<Character> tempStack = new ArrayDeque<>();
+		List<Character> clear = new ArrayList<>();
 		StringBuilder sb = new StringBuilder();
 		
 		for (int i = 0; i < origin.length; i++) {
-			stack.push(origin[i]);
+			clear.add(origin[i]);
 			
-			if (stack.size() < bomb.length || stack.peek() != bomb[bomb.length - 1]) {
+			if (clear.size() < bomb.length || origin[i] != bomb[bomb.length - 1]) {
 				continue;
 			}
 			
 			for (int j = bomb.length - 1; j >= 0; j--) {
-				if (stack.peek() != bomb[j]) {
+				if (clear.get(clear.size() + j - bomb.length) != bomb[j]) {
 					break;
 				}
 				
-				tempStack.push(stack.pop());
-				
 				if (j == 0) {
-					while (!tempStack.isEmpty()) {
-						tempStack.pop();
+					int temp = clear.size();
+					
+					for (int k = temp - 1; k >= temp - bomb.length; k--) {
+						clear.remove(k);
 					}
 				}
 			}
-			
-			while (!tempStack.isEmpty()) {
-				stack.push(tempStack.pop());
-			}
 		}
 		
-		while (!stack.isEmpty()) {
-			tempStack.push(stack.pop());
+		for (Character ch : clear) {
+			sb.append(ch);
 		}
 		
-		if (tempStack.isEmpty()) {
-			sb.append("FRULA");
-		} else {
-			while (!tempStack.isEmpty()) {
-				sb.append(tempStack.pop());
-			}
-		}
-		
-		System.out.println(sb);
+		System.out.println(sb.length() == 0 ? "FRULA" : sb);
 	}
 	
 }
