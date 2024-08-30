@@ -3,8 +3,9 @@ import java.util.*;
 
 public class Solution {
 	
-	static int[] dr = { 1, -1, 0, 0 };
-	static int[] dc = { 0, 0, -1, 1 };
+	static final int[] dr = { 1, -1, 0, 0 };
+	static final int[] dc = { 0, 0, -1, 1 };
+	static final Queue<int[]> queue = new LinkedList<>();
 	
 	static int n, w, h, min, total;
 	static int[][] map;
@@ -84,7 +85,6 @@ public class Solution {
 	
 	static int crash(int[][] board, int row, int col) {
 		boolean[][] visited = new boolean[h][w];
-		Queue<int[]> queue = new LinkedList<>();
 		visited[row][col] = true;
 		
 		queue.add(new int[] { row, col });
