@@ -2,107 +2,74 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 
-class ArrayWrapper{
-	int[] array;
-	
-	ArrayWrapper(int[] array){
-		this.array = array;
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if(this == o)
-			return true;
-		if(o==null || getClass()!= o.getClass())
-			return false;
-		ArrayWrapper that = (ArrayWrapper) o;
-		return Arrays.equals(array, that.array);
-	}
-	
-	@Override
-	public int hashCode() {
-		return Arrays.hashCode(array);
-	}
-}
-
 public class Main{
-	
-	static Set<ArrayWrapper> set = new HashSet<>();
+
+	static StringBuilder sb = new StringBuilder();
 	
     public static void main(String[] args) throws Exception{
-    	
+    
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     	BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    	StringBuilder sb = new StringBuilder();
     	
-    	String s = br.readLine();
-    	StringTokenizer st = new StringTokenizer(s);
+    	String nm = br.readLine();
+    	StringTokenizer st = new StringTokenizer(nm);
     	
     	int N = Integer.parseInt(st.nextToken());
+    	
     	int M = Integer.parseInt(st.nextToken());
     	
-    	String str = br.readLine();
-    	StringTokenizer st2 = new StringTokenizer(str);
     	
+    	// 향상된 방문 체크 배열 : 몇개 사용할 수 있는지 
+    	int[] visited = new int[10000];	
+    	
+    	// N개의 자연수
     	int[] arr = new int[N];
-    	
+    	String a = br.readLine();
+    	StringTokenizer st2 = new StringTokenizer(a);
     	for(int i=0 ; i<N ; i++) {
     		arr[i] = Integer.parseInt(st2.nextToken());
+    		visited[arr[i]]++;
     	}
     	
     	Arrays.sort(arr);
     	
-    	List<int[]> list = new ArrayList<>();
     	int[] data = new int[M];
-    	boolean[] check = new boolean[N];
     	
-    	NM(N, M, arr, 0, data, check, list);
-    	
-    	// 출력
-    	for(int[] d : list) {
-    		for(int i : d) {
-    			sb.append(i).append(" ");
-    		}
-    		sb.append("\n");
-    	}
+    	permutation(arr,N,data,M,0,visited);
     	
     	String ans = sb.toString();
     	bw.write(ans);
     	bw.flush();
     	bw.close();
+    	br.close();
     	
     }
+
+	private static void permutation(int[] arr, int n, int[] data, int m, int depth, int[] visited) {
+		if(depth==m) {
+			for(int i : data) {
+				sb.append(i).append(" ");
+			}
+			sb.append("\n");
+			return;
+		}
+		
+		int prev = -1;
+		
+		for(int i=0 ; i<n ; i++) {
+			if(visited[arr[i]]>0 && arr[i] != prev) {
+				visited[arr[i]]--;
+				data[depth]=arr[i];
+				prev = arr[i];
+				permutation(arr,n,data,m,depth+1,visited);
+				visited[arr[i]]++;
+			}
+		}
+	}
+
+
     
-    static void NM(int N, int M , int[]arr, int depth, int[] data, boolean[] check, List<int[]> list) {
-    	
-    	if(depth == M) {
-    		int[] tmp = data.clone();
-    		if(!set.contains(new ArrayWrapper(tmp))) {
-    			set.add(new ArrayWrapper(tmp));
-    			list.add(tmp);
-    		}
-    		return;
-    	}
-    	
-    	for(int i=0 ; i<N ; i++) {
-    		if(check[i]) {
-    			continue;
-    		}
-			data[depth] = arr[i];
-			check[i] = true;
-			NM(N, M, arr, depth+1, data, check, list);
-			check[i] = false;
-    	}
-    	
-    	
-    	
-    }
-  
 }
