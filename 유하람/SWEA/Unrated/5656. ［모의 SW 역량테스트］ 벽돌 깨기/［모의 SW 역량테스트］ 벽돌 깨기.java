@@ -1,3 +1,13 @@
+/*
+ * 1. board를 tmp로 복사할 때, 깊은 복사 하기 : clone 메서드에서 1차원 배열 복사도 안됨.
+ * 		원소 하나 하나 복사하기
+ * 2. 중력 작용할 때, stack에 넣은 후에는 그 자리 0으로 만들어주기
+ * 3. 구슬이 같은 자리에 또 쏠 수 있으므로 순열이 아니라 중복순열
+ * 4. H, W 헷갈리지 말기!!!
+ * 5. 테스트 케이스가 여러개이므로 static 변수 초기화 꼭 하기
+ * 6. remove 메서드에서 nr, nc 제대로 움직이는 지 확인
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
