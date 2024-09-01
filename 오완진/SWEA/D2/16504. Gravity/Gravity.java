@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Stack;
 
 public class Solution {
 	public static void main(String[] args) {
@@ -17,11 +18,19 @@ public class Solution {
 				}
 			}
 			
+			Stack<Integer>[] rotatedRoom = new Stack[100];
+			for (int r =99; r >= 0; r--) {
+				rotatedRoom[r] = new Stack<Integer>();
+				for (int c = 0; c < N; c++)
+					rotatedRoom[r].push(room[r][c]);
+			}
+			
 			int maxCnt = 0;
 			for (int r = 99; r >= 0; r--) {
 				int cnt = 0;
-				for (int c = N - 1; c >= 0; c--) {
-					if (room[r][c] == 0) cnt++;
+				while (!rotatedRoom[r].isEmpty()) {
+					int box = rotatedRoom[r].pop();
+					if (box == 0) cnt++;
 					else maxCnt = Math.max(maxCnt, cnt);
 				}
 			}
