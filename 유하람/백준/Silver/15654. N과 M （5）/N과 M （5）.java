@@ -2,50 +2,49 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.StringTokenizer;
 
-public class Main {
-	
+public class Main{
+
 	static StringBuilder sb = new StringBuilder();
 	
-	public static void main(String[] args) throws Exception {
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		
-		String s = br.readLine();
-		StringTokenizer st = new StringTokenizer(s);
-		
-		int N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
-		
-		String r = br.readLine();
-		StringTokenizer st2 = new StringTokenizer(r);
-		
-		int[] arr = new int[N];
-		
-		for(int i=0 ; i<N ; i++) {
-			arr[i] = Integer.parseInt(st2.nextToken());
-		}
-		
-		Arrays.sort(arr);
-		
-		int[] data = new int[M];
-		boolean[] check = new boolean[N];
-		NM(N, M, arr, 0, data, check);
-		
-		String ans = sb.toString();
-		bw.write(ans);
-		bw.flush();
-		bw.close();
+    public static void main(String[] args) throws Exception{
+    
+    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    	BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    	
+    	String nm = br.readLine();
+    	StringTokenizer st = new StringTokenizer(nm);
+    	
+    	int N = Integer.parseInt(st.nextToken());
+    	
+    	int M = Integer.parseInt(st.nextToken());
+    	
+    	// N개의 자연수
+    	int[] arr = new int[N];
+    	String a = br.readLine();
+    	StringTokenizer st2 = new StringTokenizer(a);
+    	for(int i=0 ; i<N ; i++) {
+    		arr[i] = Integer.parseInt(st2.nextToken());
+    	}
+    	
+    	Arrays.sort(arr);
+    	
+    	boolean[] visited = new boolean[N];
+    	int[] data = new int[M];
+    	permutation(arr, N, data, M, 0, visited);
+    	
+    	String ans = sb.toString();
+    	bw.write(ans);
+    	bw.flush();
+    	bw.close();
+    	br.close();
+    	
+    }
 
-	}
-	
-	static void NM(int N , int M, int[] arr, int depth, int[] data, boolean[] check) {
-		if(depth==M) {
+	private static void permutation(int[] arr, int n, int[] data, int m, int depth, boolean[] visited) {
+		if(depth==m) {
 			for(int i : data) {
 				sb.append(i).append(" ");
 			}
@@ -53,20 +52,16 @@ public class Main {
 			return;
 		}
 		
-		for(int i=0 ; i<N ; i++) {
-			if(check[i])
-				continue;
-			
-			data[depth] = arr[i];
-			check[i] = true;
-			NM(N,M,arr,depth+1, data, check);
-			check[i] = false;
+		for(int i=0 ; i<n ; i++) {
+			if(!visited[i]) {
+				visited[i] = true;
+				data[depth] = arr[i];
+				permutation(arr,n,data,m,depth+1,visited);
+				visited[i] = false;
+			}
 		}
 		
-		return;
 		
 	}
-	
-
-
+    
 }
