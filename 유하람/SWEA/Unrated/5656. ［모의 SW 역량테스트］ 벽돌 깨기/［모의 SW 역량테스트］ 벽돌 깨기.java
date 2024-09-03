@@ -12,21 +12,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
+
 class Solution
 {
-    static int H;
-	static int W;
+    	static int H;	// 높이
+	static int W;	// 너비
 	static int[][] board;
-	static List<int[]> list;
-	
+	static List<int[]> list;	// 쏠 순서 저장
+
+	// 상, 하, 좌, 우
 	static int[] dr = {-1,1,0,0};
 	static int[] dc = {0,0,-1,1};
 	
-	static int minCnt;
+	static int minCnt;	// 출력할 정답 : 남아있는 벽돌 최소 개수
     
 	public static void main(String args[]) throws Exception
 	{
-        Scanner sc = new Scanner(System.in);
+        	Scanner sc = new Scanner(System.in);
 		
 		int T = sc.nextInt();
 		
@@ -54,7 +56,7 @@ class Solution
 			}
 			
 			
-			// W개의 col 중에서 N개 순열로 고름
+			// W개의 col 중에서 N개 중복순열로 고름
 			// 고른 후 list에 저장
 			
 			int[] data = new int[N];
@@ -65,7 +67,7 @@ class Solution
 			// list에 저장한 순서로 구슬 쏘기
 			minCnt = Integer.MAX_VALUE;
 			
-			for(int[] Col : list) {
+			for(int[] Col : list) {	
 				shoot(Col);
 			}
 			
@@ -76,7 +78,7 @@ class Solution
     private static void shoot(int[] col) {
 		int[][] tmp = clone(board);
 		
-		for(int i : col) {
+		for(int i : col) {	// 선택한 col 중 차례로 구슬 쏘기
 			int r = 0;
 			
 			// 가장 위의 벽돌까지 이동
@@ -95,7 +97,7 @@ class Solution
 			
 		}
 		
-		// 남은 블럭 수 세기
+		// 남은 벽돌 수 세기
 		int cnt = count(tmp);
 		minCnt = Math.min(cnt, minCnt);
 		
@@ -103,7 +105,7 @@ class Solution
 	}
 
 
-	private static int count(int[][] tmp) {
+	private static int count(int[][] tmp) {	// 남은 벽돌 수 세기
 		int cnt = 0;
 		
 		for(int i=0 ; i<H ; i++) {
@@ -118,7 +120,7 @@ class Solution
 	}
 
 
-	private static int[][] gravity(int[][] tmp) {
+	private static int[][] gravity(int[][] tmp) {	// 제거 후 스택 이용하여 중력 작용
 		
 		Stack<Integer> stack = new Stack<>();
 		
@@ -126,7 +128,7 @@ class Solution
 			for(int r=0 ; r<H ; r++) {
 				if(tmp[r][c]>0) {
 					stack.add(tmp[r][c]);
-					tmp[r][c] = 0;
+					tmp[r][c] = 0;	// 스택에 담고 나서는 0으로 바꿔줘야 함
 				}
 				
 			}
@@ -152,7 +154,7 @@ class Solution
 				
 //				System.out.println("nr : "+nr+", nc : "+nc);
 				
-				if(nr>=0 && nr<H && nc>=0 && nc<W && tmp[nr][nc]>0) {
+				if(nr>=0 && nr<H && nc>=0 && nc<W && tmp[nr][nc]>0) {	// 깨지는 벽돌들의 영역도 같이 깨짐
 					tmp = remove(tmp, nr, nc);
 					
 				}
@@ -164,7 +166,7 @@ class Solution
 	}
 
 
-	private static int[][] clone(int[][] board) {
+	private static int[][] clone(int[][] board) {	// 테스트 때마다 임시 공간 만들기
 		int[][] tmp = new int[H][W];
 		
 		for(int r=0 ; r<H ; r++) {
@@ -181,7 +183,7 @@ class Solution
 	private static void selectCol(int n, int depth, int[] data) {
 		
 		if(n==depth) {
-			list.add(data.clone());
+			list.add(data.clone());		// 참조형이기 때문에 clone 꼭 해야함
 			return;
 		}
 		
