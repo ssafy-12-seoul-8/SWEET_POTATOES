@@ -1,72 +1,57 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.StringTokenizer;
 
-class Solution
-{
-    static int answer;
-	public static void main(String args[]) throws Exception
-	{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		StringBuilder sb = new StringBuilder();
+public class Solution {
+	
+	public static void main(String[] args) throws Exception {
 		
-		int T = Integer.parseInt(br.readLine());
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		String t = br.readLine();
+		int T = Integer.parseInt(t);
 		
 		for(int tc=1 ; tc<=T ; tc++) {
 			
 			String s = br.readLine();
-			StringTokenizer st = new StringTokenizer(s);
+			StringTokenizer st1 = new StringTokenizer(s);
 			
-			int day = Integer.parseInt(st.nextToken());			// 1일 가격
-			int month = Integer.parseInt(st.nextToken());		// 한달 가격
-			int tMonth = Integer.parseInt(st.nextToken());		// 3달 가격
-			int year = Integer.parseInt(st.nextToken());		// 1년 가격
+			int day = Integer.parseInt(st1.nextToken());
+			int month = Integer.parseInt(st1.nextToken());
+			int tMonth = Integer.parseInt(st1.nextToken());
+			int year = Integer.parseInt(st1.nextToken());
 			
-			String s2 = br.readLine();
-			StringTokenizer st2 = new StringTokenizer(s2);
+			int[] plan = new int[13];
 			
-			int[] plan = new int[13];							// 이용 계획
+			String p = br.readLine();
+			StringTokenizer st2 = new StringTokenizer(p);
 			
+			// 일일권보다 한달권이 싼 경우 한달권 선택
+			// 각 달에 그 달까지의 최소 비용 저장
 			for(int i=1 ; i<13 ; i++) {
-				plan[i] = Integer.parseInt(st2.nextToken());
+				int num = Integer.parseInt(st2.nextToken());
+				
+				if(num*day < month) {	
+					plan[i] = plan[i-1] + num*day;
+				}else {
+					plan[i] = plan[i-1] + month;
+				}
+				
+
+				// 3개월 이후부터는 3개월권도 생각
+				if(i>=3) {
+					if(plan[i] > plan[i-3] + tMonth) {
+						plan[i] =  plan[i-3] + tMonth;
+					}
+				}
 			}
 			
-			int[] price = new int[13]; 							// 최소 가격 넣을 배열
+			int answer = Math.min(plan[12], year);
 			
-			int answer = DP(day, month, tMonth, year, plan, price);
+			System.out.println("#"+tc+" "+answer);
 			
-			sb.append("#").append(tc).append(" ").append(answer).append("\n");
 		}
 		
-		bw.write(sb.toString());
-		bw.flush();
-		bw.close();
 	}
-    
-    // day, month, tMonth, year, plan은 입력값
-	// price는 각 달의 최소 비용 저장할 배열
-	static int DP(int day, int month, int tMonth, int year, int[] plan, int[] price) {
-		
-		for(int m=1 ; m<13 ; m++) {
-			// 1일권
-			int sum = price[m-1] + plan[m]*day;
-			// 한달권
-			sum = Math.min(sum, price[m-1]+month);
-			// 3개월 권
-			if(m>=3) {
-				sum = Math.min(sum, price[m-3]+tMonth);
-			}
-			// 12개월 권
-			if(m>=12) {
-				sum = Math.min(sum, year);
-			}
-			
-			price[m] = sum;
-			
-		}
-		return price[12];
-	}
+
 }
