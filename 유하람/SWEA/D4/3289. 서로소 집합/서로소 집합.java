@@ -36,9 +36,6 @@ public class Solution {
 					p[pa] = pb;
 				}else {
 					
-					// 갱신
-					p[A] = p[pa];
-					p[B] = p[pb];
 					
 					if(p[A]==p[B]) {
 						System.out.print(1);
