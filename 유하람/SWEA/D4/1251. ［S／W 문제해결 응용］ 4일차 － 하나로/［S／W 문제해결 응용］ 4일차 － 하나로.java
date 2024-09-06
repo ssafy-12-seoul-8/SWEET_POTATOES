@@ -1,35 +1,35 @@
+
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Solution {
 	
-	static class Edge implements Comparable<Edge>{
-		int a;
-		int b;
-		double w;
+	static class Node implements Comparable<Node>{
+		int idx;
+		double length;
 		
-		Edge(int a, int b, double w){
-			this.a = a;
-			this.b = b;
-			this.w = w;
+		public Node(int idx, double length) {
+			this.idx = idx;
+			this.length = length;
 		}
 
 		@Override
-		public int compareTo(Solution.Edge o) {
-			return (int) (this.w - o.w);
+		public int compareTo(Node o) {
+			return Double.compare(this.length, o.length);
+		}
+
+		@Override
+		public String toString() {
+			return "Node [idx=" + idx + ", length=" + length + "]";
 		}
 		
+		
 	}
-	
-	static Edge[] Edges;
-	
-	static int n;
-	static double[] x;
-	static double[] y;
-	static int idx;
-	static int[] p;
 
 	public static void main(String[] args) throws Exception {
 		
@@ -41,87 +41,69 @@ public class Solution {
 		
 		for(int tc=1 ; tc<=T ; tc++) {
 			
-			String N = br.readLine();
-			n = Integer.parseInt(N);
+			String n = br.readLine();
+			int N = Integer.parseInt(n);
+			double[][] lands = new double[N][2];	// 섬의 좌표들 (r,c)
+			List<Node>[] plan = new LinkedList[N];	// 섬들의 연결 정보
 			
-			String X = br.readLine();
-			StringTokenizer st1 = new StringTokenizer(X);
-			String Y = br.readLine();
-			StringTokenizer st2 = new StringTokenizer(Y);
-			
-			x = new double[n];
-			y = new double[n];
-			
-			for(int i=0 ; i<n ; i++) {
-				x[i] = Double.parseDouble(st1.nextToken());
-				y[i] = Double.parseDouble(st2.nextToken());
+			for(int i=0 ; i<N ; i++) {
+				plan[i] = new LinkedList<>();
 			}
 			
-			String E = br.readLine();
-			double e = Double.parseDouble(E);
+			// 각 섬들의 좌표 입력
+			String row = br.readLine();
+			StringTokenizer st1 = new StringTokenizer(row);
+			String col = br.readLine();
+			StringTokenizer st2 = new StringTokenizer(col);
 			
-			Edges = new Edge[(n*(n-1))/2];
-			idx = 0;
-			int[] data = new int[2];
-			makeE(data, 0, 0);
-			
-			Arrays.sort(Edges);
-			
-			p = new int[n];
-			
-			for(int i=0 ; i<n ; i++) {
-				p[i] = i;
+			for(int i=0 ; i<N ; i++) {
+				lands[i][0] = Double.parseDouble(st1.nextToken());
+				lands[i][1] = Double.parseDouble(st2.nextToken());
 			}
 			
-			double price = 0;
-			int pick = 0;
+			// 세율 입력
+			String e = br.readLine();
+			Double E = Double.parseDouble(e);
 			
-			for(Edge edge : Edges) {
-				int pa = find(edge.a);
-				int pb = find(edge.b);
-				
-				if(pa!=pb) {
-					p[pa] = pb;
-					pick++;
-					price += edge.w*e;
+			
+			// 각 섬들의 연결 정보 저장
+			for(int i=0 ; i<N ; i++) {
+				for(int j=0 ; j<N ; j++) {
+					if(i==j) continue;
+					double len = (lands[i][0] - lands[j][0])*(lands[i][0] - lands[j][0]) + (lands[i][1] - lands[j][1])*(lands[i][1] - lands[j][1]);
+					len *= E;
+					plan[i].add(new Node(j,len));
 				}
-				
-				if(pick==n-1)
-					break;
-				
 			}
 			
+			PriorityQueue<Node> pq = new PriorityQueue<>();
+			boolean[] visited = new boolean[N];
+			visited[0] =true;
 			
-			sb.append("#").append(tc).append(" ").append(Math.round(price)).append("\n");
+			double totalLength = 0;
+			int pick = 1;
 			
-		}
+			pq.addAll(plan[0]);
+			
+			while(pick!=N) {
+				Node curr = pq.poll();
+				if(visited[curr.idx]) continue;
+				visited[curr.idx] = true;
+				totalLength += curr.length;
+				pick++;
+				pq.addAll(plan[curr.idx]);
+			}
+			
+			double answer = Math.round(totalLength);
+			long finalAnswer = (long)answer;
+			
+			sb.append("#").append(tc).append(" ").append(finalAnswer).append("\n");
+			
+		} // tc
 		
 		String ans = sb.toString();
 		System.out.println(ans);
 		
-	}
-
-	private static int find(int b) {
-		if(b!=p[b]) {
-			return find(p[b]);
-		}
-		return p[b];
-	}
-
-	private static void makeE(int[] data, int level, int sidx) {
-		if(level==2) {
-			int n1 = data[0];
-			int n2 = data[1];
-			double w = (x[n1]-x[n2])*(x[n1]-x[n2]) + (y[n1]-y[n2])*(y[n1]-y[n2]);
-			Edge tmp = new Edge(n1,n2,w);
-			Edges[idx++] = tmp;
-			return;
-		}
-		
-		for(int i=sidx ; i<n ; i++) {
-			data[level] = i;
-			makeE(data, level+1, i+1);
-		}
-	}
+	} // main
 
 }
