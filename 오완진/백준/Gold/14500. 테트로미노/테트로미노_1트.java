@@ -18,7 +18,7 @@ public class Main {
 				map[n][m] = sc.nextInt();
 
 		int maxSum = Integer.MIN_VALUE;
-		combination(new ArrayList<>(), 0);			// 6C2
+		combination(new ArrayList<>(), 0);			// 6 combination 2
 
 		// 4 x 1
 		for (int n = 0; n < N; n++) {
