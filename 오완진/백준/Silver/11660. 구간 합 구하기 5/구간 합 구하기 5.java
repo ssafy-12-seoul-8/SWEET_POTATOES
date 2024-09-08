@@ -8,6 +8,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		Scanner sc = new Scanner(System.in);
+		StringBuilder sb = new StringBuilder();
 		
 		N = sc.nextInt();
 		M = sc.nextInt();
@@ -35,8 +36,9 @@ public class Main {
 			int y2 = MM[m][3];
 			
 			int sum = NN[x2][y2] - NN[x1-1][y2] - NN[x2][y1-1] + NN[x1-1][y1-1];
-			System.out.println(sum);
+			sb.append(sum).append("\n");
 		}
 		
+		System.out.println(sb);
 	}
 }
