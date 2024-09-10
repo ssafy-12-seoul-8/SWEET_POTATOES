@@ -72,10 +72,6 @@ public class Main {
 			}
 		}
 		
-//		for (int i = 0; i < N; i++) {
-//			System.out.println(Arrays.toString(sand[i]));
-//		}
-		
 		System.out.println(total);
 	}
 	
@@ -90,8 +86,8 @@ public class Main {
 				double per = 0;
 				
 				if (j == 0) { per = 0.1; }
-				if (j == 1) { per = 0.07; }
-				if (j == 2) { per = 0.01; }
+				else if (j == 1) { per = 0.07; }
+				else if (j == 2) { per = 0.01; }
 				
 				double s = Math.floor(S * per);
 				sum += s;
@@ -142,8 +138,8 @@ public class Main {
 				double per = 0;
 				
 				if (j == 0) { per = 0.01; }
-				if (j == 1) { per = 0.07; }
-				if (j == 2) { per = 0.1; }
+				else if (j == 1) { per = 0.07; }
+				else if (j == 2) { per = 0.1; }
 				
 				double s = Math.floor(S * per);
 				sum += s;
@@ -183,9 +179,6 @@ public class Main {
 		sand[y][x] = 0;
 	}
 	
-//	static int[] rowDy = {-1, 1};
-//	static int[] colDx = {-1, 0, 1};
-	
 	static void up (int y, int x) {
 		int S = sand[y][x];
 		int sum = 0;
@@ -197,8 +190,8 @@ public class Main {
 				double per = 0;
 				
 				if (j == 0) { per = 0.1; }
-				if (j == 1) { per = 0.07; }
-				if (j == 2) { per = 0.01; }
+				else if (j == 1) { per = 0.07; }
+				else if (j == 2) { per = 0.01; }
 				
 				double s = Math.floor(S * per);
 				sum += s;
@@ -249,8 +242,8 @@ public class Main {
 				double per = 0;
 				
 				if (j == 0) { per = 0.01; }
-				if (j == 1) { per = 0.07; }
-				if (j == 2) { per = 0.1; }
+				else if (j == 1) { per = 0.07; }
+				else if (j == 2) { per = 0.1; }
 				
 				double s = Math.floor(S * per);
 				sum += s;
