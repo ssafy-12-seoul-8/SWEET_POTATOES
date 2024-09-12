@@ -13,12 +13,13 @@ public class Main {
 		m = Integer.parseInt(st.nextToken());
 		courses = new int[n];
 		int left = 0;
-		int right = 10_000 * n;
+		int right = 0;
 		st = new StringTokenizer(br.readLine());
 		
 		for (int i = 0; i < n; i++) {
 			courses[i] = Integer.parseInt(st.nextToken());
 			left = Math.max(left, courses[i]);
+			right += courses[i];
 		}
 		
 		while (left <= right) {
