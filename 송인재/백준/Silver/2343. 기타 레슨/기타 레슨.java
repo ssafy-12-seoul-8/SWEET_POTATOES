@@ -51,11 +51,7 @@ public class Main {
 			sum += courses[i];
 		}
 		
-		if (sum <= limit && count + 1 > m) {
-			return false;
-		}
-		
-		return true;
+		return count + 1 <= m;
 	}
 	
 }
