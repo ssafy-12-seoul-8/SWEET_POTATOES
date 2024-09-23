@@ -3,58 +3,54 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
-	
-	static int N;
-	static int[] cows;
-	
-	public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
 
-       BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-       N = Integer.parseInt(reader.readLine().trim());
-       String line = reader.readLine().trim();
-       
-       String[] tokens = line.split(" ");
-       cows = new int[N];
-       
-       for (int i = 0; i < N; i++)
-           cows[i] = Integer.parseInt(tokens[i]);
-       
-       /* 
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(reader.readLine().trim());
+        String line = reader.readLine().trim();
+
+        String[] tokens = line.split(" ");
+        int[] cows = new int[N];
+
+        for (int i = 0; i < N; i++) {
+            cows[i] = Integer.parseInt(tokens[i]);
+        }
+        
+	       
+       /*
         * 아이디어
-        * 이진탐색을 히터의 위치에서 minMaxMeltingTime 을 움직이는 것으로 변경
-        * 고정한 minMaxMeltingTime 동안 얼음을 전부 녹일 수 있는지 확인
-        * 각 소마다 히터의 범위를 구하다가 히터의 범위 밖에 놓임 = 시간이 부족함
+        * 찾은 소의 위치로부터 히터의 위치가 가까워지면 갱신
+        * 찾은 소의 위치로부터 히터의 위치가 멀어지면 볼 필요없음
         */
-       
-       long btm = 0;
-       long top = 150_000_000_000L;
-       
-       while (btm < top) {
-    	   long mid = (btm + top) / 2;
-    	   if (canMeltInTime(mid)) top = mid;
-    	   else			btm = mid + 1;
-       }
-       
-       System.out.println(btm);
-		
-	}
-	
-	static boolean canMeltInTime(long mid) {
-		
-		long canMeltRange = mid / cows[0];
-		long canMeltL = 0;
-		long canMeltR = canMeltRange;
-		
-		for (int i = 1; i < N; i++) {
-			canMeltRange = mid / cows[i];
-			canMeltL = Math.max(canMeltL, i - canMeltRange);
-			canMeltR = Math.min(canMeltR, i + canMeltRange);
 
-			if (canMeltL > canMeltR)
-				return false;
-		}
-		
-		return true;
-		
-	}
+        int L = 0;
+        int R = N - 1;
+        long minMaxMeltingTime = Long.MAX_VALUE;
+
+        while (L <= R) {
+            int H = (L + R) / 2;
+
+            long maxMeltingTimeL = 0;
+            for (int i = 0; i < H; i++) {
+     		   long meltingTime = (long)Math.abs(H - i) * cows[i];
+     		   maxMeltingTimeL = Math.max(maxMeltingTimeL, meltingTime);
+            }
+
+            long maxMeltingTimeR = 0;
+            for (int i = H + 1; i < N; i++) {
+     		   long meltingTime = (long)Math.abs(H - i) * cows[i];
+     		   maxMeltingTimeR = Math.max(maxMeltingTimeR, meltingTime);
+            }
+
+            long maxMeltingTime = Math.max(maxMeltingTimeL, maxMeltingTimeR);
+            minMaxMeltingTime = Math.min(minMaxMeltingTime, maxMeltingTime);
+
+            if (maxMeltingTimeL > maxMeltingTimeR)
+                R = H - 1;
+            else
+                L = H + 1;
+        }
+
+        System.out.println(minMaxMeltingTime);
+    }
 }
