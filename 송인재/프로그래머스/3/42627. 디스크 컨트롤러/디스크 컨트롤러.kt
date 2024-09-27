@@ -13,16 +13,16 @@ class Solution {
         for (job in jobs) {
             while (!pq.isEmpty() && estimatedEnd < job[0]) {
                 val working = pq.poll()
-                estimatedEnd = Math.max(estimatedEnd, working.start) + working.process
+                estimatedEnd = maxOf(estimatedEnd, working.start) + working.process
                 total += estimatedEnd - working.start
             }
             
             pq.add(Job(job[0], job[1]))
         }
         
-        while (!pq.isEmpty()) {
+        repeat (pq.size) {
             val working = pq.poll()
-            estimatedEnd = Math.max(estimatedEnd, working.start) + working.process;
+            estimatedEnd = maxOf(estimatedEnd, working.start) + working.process;
             total += estimatedEnd - working.start;
         }
         
