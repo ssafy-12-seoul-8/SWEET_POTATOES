@@ -22,7 +22,7 @@ public class Main {
   }
 
   static int n, attack;
-  static long[][] rooms;
+  static int[][] rooms;
   static Hero hero;
 
   public static void main(String[] args) throws IOException {
@@ -30,7 +30,7 @@ public class Main {
     StringTokenizer st = new StringTokenizer(br.readLine());
     n = Integer.parseInt(st.nextToken());
     attack = Integer.parseInt(st.nextToken());
-    rooms = new long[n][3];
+    rooms = new int[n][3];
     hero = new Hero(attack);
     long left = 1;
     long right = Long.MAX_VALUE - 1;
@@ -59,13 +59,13 @@ public class Main {
     hero.startWith(attack, maxHp);
 
     for (int i = 0; i < n; i++) {
-      long[] atRoom = rooms[i];
+      int[] atRoom = rooms[i];
 
       if (atRoom[0] == 1) {
-        long monsterAttack = atRoom[1];
-        long monsterHp = atRoom[2];
+        int monsterAttack = atRoom[1];
+        int monsterHp = atRoom[2];
         long division = monsterHp / hero.attack;
-
+        
         if (monsterHp % hero.attack == 0) {
           division--;
         }
@@ -76,8 +76,8 @@ public class Main {
           return false;
         }
       } else {
-        long attackIncrease = atRoom[1];
-        long hpIncrease = atRoom[2];
+        int attackIncrease = atRoom[1];
+        int hpIncrease = atRoom[2];
         hero.attack += attackIncrease;
         hero.currHp = Math.min(hero.currHp + hpIncrease, maxHp);
       }
