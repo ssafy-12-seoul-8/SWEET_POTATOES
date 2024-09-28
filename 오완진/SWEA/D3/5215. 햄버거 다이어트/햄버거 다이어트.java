@@ -1,48 +1,34 @@
 import java.util.Scanner;
 
 public class Solution {
-	
-	static int N;
-	static int L;
-	static int maxScore;
-	static int[][] hbg;
-	
 	public static void main(String[] args) {
 		
 		Scanner sc = new Scanner(System.in);
+		
 		int TC = sc.nextInt();
 		for (int tc = 1; tc <= TC; tc++) {
 			
-			N = sc.nextInt();
-			L = sc.nextInt();
-			hbg = new int[N][2];
+			int N = sc.nextInt();
+			int L = sc.nextInt();
 			
-			for (int n = 0; n < N; n++) {
-				hbg[n][0] = sc.nextInt();	// 점수
-				hbg[n][1] = sc.nextInt();	// 칼로리
+			int[][] bger = new int[N+1][2];
+			for (int i = 1; i <= N; i++) {
+				bger[i][0] = sc.nextInt();		// 점수
+				bger[i][1] = sc.nextInt();		// 칼로리
 			}
 			
-			maxScore = 0;	// 초기화
+			int[][] dp = new int[N+1][L+1];
+			for (int i = 1; i <= N; i++) {
+				for (int j = 1; j <= L; j++) {
+					if (bger[i][1] <= j)
+						dp[i][j] = Math.max(dp[i-1][j], dp[i-1][j-bger[i][1]] + bger[i][0]);
+					else
+						dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+				}
+			}
 			
-			makeHBG(0, 0, 0);
-			
-			System.out.println("#" + tc + " " + maxScore);
-		}
+			System.out.println("#" + tc + " " + dp[N][L]);
+		}//tc
 		
-	}
-	
-	static void makeHBG(int score, int cal, int idx) {
-		
-		if (cal <= L)
-			maxScore = Math.max(maxScore, score);
-		else return;
-		
-		for (int n = idx; n < N; n++) {
-			score += hbg[n][0];
-			cal += hbg[n][1];
-			makeHBG(score, cal, n + 1);
-			cal -= hbg[n][1];
-			score -= hbg[n][0];
-		}
 	}
 }
