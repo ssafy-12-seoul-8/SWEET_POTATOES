@@ -5,25 +5,25 @@ public class Main {
 		
 		Scanner sc = new Scanner(System.in);
 		
-		int N = sc.nextInt();			// 배낭개수
-		int K = sc.nextInt();			// 최대무게
-		int[][] bag = new int[N+1][2];
-		int[][] dp = new int[N+1][K+1];
+		int N = sc.nextInt();
+		int K = sc.nextInt();
 		
-		for (int n = 1; n <= N; n++) {
-			bag[n][0] = sc.nextInt();	// 무게
-			bag[n][1] = sc.nextInt();	// 가치
+		int[][] backpack = new int[N+1][2];
+		for (int i = 1; i <= N; i++) {
+			backpack[i][0] = sc.nextInt();	// 무게
+			backpack[i][1] = sc.nextInt();	// 가치
 		}
 		
-		for (int n = 1; n <= N; n++) {
-			for (int k = 1; k <= K; k++) {
-				if (bag[n][0] <= k)
-					dp[n][k] = Math.max(dp[n-1][k], dp[n-1][k - bag[n][0]] + bag[n][1]);
+		int[][] dp = new int[N+1][K+1];
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= K; j++) {
+				if (j >= backpack[i][0])
+					dp[i][j] = Math.max(dp[i-1][j], dp[i-1][j - backpack[i][0]] + backpack[i][1]);
 				else
-					dp[n][k] = Math.max(dp[n-1][k], dp[n][k-1]);
+					dp[i][j] = dp[i-1][j];
 			}
 		}
-
+		
 		System.out.println(dp[N][K]);
 	}
 }
