@@ -15,11 +15,13 @@ public class Main {
 		int[] dp = new int[K+1];
 		dp[0] = 1;
 		
-        for (int i = 1; i <= N; i++) {
-        	int coin = coins[i];
-        	for (int j = coin; j <= K; j++)
-        		dp[j] += dp[j - coin];
-        }
+		for (int i = 1; i <= N; i++) {
+			int coin = coins[i];
+			
+			for (int j = coin; j <= K; j++)
+				dp[j] += dp[j-coin];
+				
+		}
 		
 		System.out.println(dp[K]);
 	}
