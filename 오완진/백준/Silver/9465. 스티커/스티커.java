@@ -1,45 +1,36 @@
 import java.util.Scanner;
 
 public class Main {
-	
-	static int N;
-	static int[][] stk, dp;
-	
 	public static void main(String[] args) {
 		
 		Scanner sc = new Scanner(System.in);
 		
 		int TC = sc.nextInt();
-		
 		for (int tc = 1; tc <= TC; tc++) {
 			
-			N = sc.nextInt();
-			stk = new int[2][N];
-			dp = new int[2][N];
+			int N = sc.nextInt();
+			int[][] stk = new int[3][N+1];
+			for (int i = 1; i <= 2; i++)
+				for (int j = 1; j <= N; j++)
+					stk[i][j] = sc.nextInt();
 			
-			for (int r = 0; r < 2; r++)
-				for (int c = 0; c < N; c++)
-					stk[r][c] = sc.nextInt();
-			
-			dp[0][0] = stk[0][0];
-			dp[1][0] = stk[1][0];
-
 			if (N == 1) {
-				int maxScore = Math.max(dp[0][0], dp[1][0]);
-				System.out.println(maxScore);
-			} else {
-				
-				dp[0][1] = dp[1][0] + stk[0][1];
-				dp[1][1] = dp[0][0] + stk[1][1];
-				
-				for (int c = 2; c < N; c++) {
-				    dp[0][c] = Math.max(dp[1][c-2], dp[1][c-1]) + stk[0][c];
-				    dp[1][c] = Math.max(dp[0][c-2], dp[0][c-1]) + stk[1][c];
-				}
-
-				int maxScore = Math.max(dp[0][N-1], dp[1][N-1]);
-				System.out.println(maxScore);
+				System.out.println(Math.max(stk[1][1], stk[2][1]));
+				continue;
 			}
-		}// tc
+			
+			int[][] dp = new int[3][N+1];
+			dp[1][1] = stk[1][1];
+			dp[2][1] = stk[2][1];
+			dp[1][2] = dp[2][1] + stk[1][2];
+			dp[2][2] = dp[1][1] + stk[2][2];
+			
+			for (int j = 3; j <= N; j++) {
+				dp[1][j] = Math.max(dp[2][j-2], dp[2][j-1]) + stk[1][j];
+				dp[2][j] = Math.max(dp[1][j-2], dp[1][j-1]) + stk[2][j];
+			}
+			
+			System.out.println(Math.max(dp[1][N], dp[2][N]));
+		}//tc
 	}
 }
