@@ -1,9 +1,11 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 	
 	static int N, M;
-	static int[] arr;
+	static List<Integer> arr;
 	static boolean[] visited;
 	
     public static void main(String[] args) {
@@ -13,15 +15,15 @@ public class Main {
     	N = sc.nextInt();
     	M = sc.nextInt();
     	
-    	arr = new int[M];
+    	arr = new ArrayList<>();
     	visited = new boolean[N+1];
     	    	
-    	btk(0);
+    	btk();
     }
     
-    static void btk(int idx) {
+    static void btk() {
     	
-    	if (idx == M) {
+    	if (arr.size() == M) {
     		for (int num : arr)
     			System.out.print(num + " ");
     		System.out.println();
@@ -32,11 +34,11 @@ public class Main {
     		
     		if (!visited[i]) {
     			visited[i] = true;
-    			arr[idx] = i;
-    			btk(idx + 1);
+    			arr.add(i);
+    			btk();
+    			arr.remove(arr.size() - 1);
     			visited[i] = false;
     		}
-    		
     	}
     	
     }
