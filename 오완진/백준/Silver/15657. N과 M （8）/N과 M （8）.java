@@ -5,39 +5,48 @@ import java.util.Scanner;
 
 public class Main {
 	
-	static int N;
-	static int M;
+	static int N, M;
 	static int[] NN;
+	static List<Integer> arr;
+	static boolean[] visited;
 	
-	public static void main(String[] args) {
-		
-		Scanner sc = new Scanner(System.in);
-		
-		N = sc.nextInt();
-		M = sc.nextInt();
-		NN = new int[N];
-		
-		for (int n = 0; n < N; n++)
-			NN[n] = sc.nextInt();
-		Arrays.sort(NN);
-		
-		btk(0, new ArrayList<>());
-	}
-	
-	static void btk(int start, List<Integer> pickN) {
-		if(pickN.size() == M) {
-			for (int num : pickN)
-				System.out.print(num + " ");
-			System.out.println();
-			
-			return;
-		}
-		
-		for (int n = start; n < N; n++) {
-			pickN.add(NN[n]);
-			btk(n, pickN);
-			pickN.remove(pickN.size() - 1);
-		}
-		
-	}
+    public static void main(String[] args) {
+
+    	Scanner sc = new Scanner(System.in);
+    	
+    	N = sc.nextInt();
+    	M = sc.nextInt();
+    	
+    	NN = new int[N];
+    	for (int i = 0; i < N; i++)
+    		NN[i] = sc.nextInt();
+    	Arrays.sort(NN);
+    		
+    	arr = new ArrayList<>();
+    	visited = new boolean[N+1];
+    	    	
+    	btk(0);
+    }
+    
+    static void btk(int idx) {
+    	
+    	if (arr.size() == M) {
+    		for (int num : arr)
+    			System.out.print(num + " ");
+    		System.out.println();
+    		return;
+    	}
+    	
+    	for (int i = idx; i < N; i++) {
+    		
+//    		if (!visited[i]) {
+//    			visited[i] = true;
+    			arr.add(NN[i]);
+    			btk(i);
+    			arr.remove(arr.size() - 1);
+//    			visited[i] = false;
+//    		}
+    	}
+    	
+    }
 }
