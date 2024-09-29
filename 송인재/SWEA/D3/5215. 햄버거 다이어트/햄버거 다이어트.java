@@ -25,8 +25,7 @@ public class Solution {
 					if (hamburgers[i][1] > j) {
 						dp[i][j] = dp[i - 1][j];
 					} else {
-						int contain = dp[i - 1][j - hamburgers[i][1]] + hamburgers[i][0];
-						dp[i][j] = contain > dp[i - 1][j] ? contain : dp[i - 1][j];
+						dp[i][j] = Math.max(dp[i - 1][j - hamburgers[i][1]] + hamburgers[i][0], dp[i - 1][j]);
 					}
 				}
 			}
