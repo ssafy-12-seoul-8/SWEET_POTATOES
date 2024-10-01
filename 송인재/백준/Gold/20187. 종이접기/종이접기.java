@@ -1,78 +1,72 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    static int k;
-    static int holeNum; //구멍 뚫는 위치
-    static char lastHor, lastVer;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        k = Integer.parseInt(br.readLine());
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < 2 * k; i++) {
-            char fold = st.nextToken().charAt(0);
-            if (fold == 'D' || fold == 'U') {
-                lastHor = fold; //마지막 가로 접기
-            } else {
-                lastVer = fold; //마지막 세로 접기
-            }
-        }
+  static int[][] pattern = {
+      { 0, 1, 2, 3 },
+      { 1, 0, 3, 2 },
+      { 2, 3, 0, 1 },
+      { 3, 2, 1, 0 },
+  };
 
-        holeNum = Integer.parseInt(br.readLine());
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int k = Integer.parseInt(br.readLine());
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    String lastRL = "";
+    String lastUD = "";
 
-        // 2x2에서의 왼쪽 위 위치로 구멍 위치 변경
-        if (lastVer == 'L' && lastHor == 'U') { //1. 왼쪽 위로 마지막으로 접힌 경우
-            holeNum = holeNum;
-        }
-        if (lastVer == 'R' && lastHor == 'U') { //2. 오른쪽 위로 마지막으로 접힌 경우
-            holeNum = ver(holeNum);
-        }
-        if (lastVer == 'L' && lastHor == 'D') { //3. 왼쪽 아래로 마지막으로 접힌 경우
-            holeNum = hor(holeNum);
-        }
-        if (lastVer == 'R' && lastHor == 'D') { //4. 오른쪽 아래로 마지막으로 접힌 경우
-            holeNum = hor(ver(holeNum));
-        }
+    for (int i = 0; i < 2 * k; i++) {
+      String direction = st.nextToken();
 
-        int one = holeNum; // 2x2에서의 왼쪽 위 위치
-        int two = ver(holeNum); // 2x2에서의 오른쪽 위 위치
-        int three = hor(holeNum); // 2x2에서의 왼쪽 아래 위치
-        int four = hor(ver(holeNum)); // 2x2에서의 오른쪽 아래 위치
-
-        //결국에는 2x2 구멍 4개의 반복
-        for (int i = 0; i < Math.pow(2, k); i++) {
-            if (i % 2 == 0) {
-                for (int j = 0; j < Math.pow(2, k - 1); j++) {
-                    System.out.print(one + " ");
-                    System.out.print(two + " ");
-                }
-                System.out.println();
-            } else {
-                for (int j = 0; j < Math.pow(2, k - 1); j++) {
-                    System.out.print(three + " ");
-                    System.out.print(four + " ");
-                }
-                System.out.println();
-            }
-        }
+      if (direction.equals("U") || direction.equals("D")) {
+        lastUD = direction;
+      } else {
+        lastRL = direction;
+      }
     }
 
-    //세로 대칭 구멍 위치
-    private static int ver(int holeNum) {
-        if (holeNum == 0) return 1;
-        if (holeNum == 1) return 0;
-        if (holeNum == 2) return 3;
+    int lastCommand = getLastCommand(lastUD);
+    lastCommand += getLastCommand(lastRL);
+
+    int penetration = Integer.parseInt(br.readLine());
+    int[] paperPattern = pattern[lastCommand];
+    int[] penetrationPattern = pattern[paperPattern[penetration]];
+    StringBuilder sb = new StringBuilder();
+
+    for (int i = 0; i < Math.pow(2, k); i++) {
+      boolean isUpper = i % 2 == 0;
+
+      for (int j = 0; j < Math.pow(2, k - 1); j++) {
+        if (isUpper) {
+          sb.append(penetrationPattern[0])
+              .append(" ")
+              .append(penetrationPattern[1])
+              .append(" ");
+        } else {
+          sb.append(penetrationPattern[2])
+              .append(" ")
+              .append(penetrationPattern[3])
+              .append(" ");
+        }
+      }
+
+      sb.append("\n");
+    }
+
+    System.out.println(sb);
+  }
+
+  static int getLastCommand(String command) {
+    switch (command) {
+      case "R":
+        return 1;
+      case "D":
         return 2;
     }
 
-    //가로 대칭 구멍 위치
-    private static int hor(int holeNum) {
-        if (holeNum == 0) return 2;
-        if (holeNum == 1) return 3;
-        if (holeNum == 2) return 0;
-        return 1;
-    }
+    return 0;
+  }
+
 }
