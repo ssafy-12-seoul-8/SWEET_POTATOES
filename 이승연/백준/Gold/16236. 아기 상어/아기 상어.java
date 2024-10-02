@@ -76,6 +76,7 @@ public class Main {
 	
 	public static int[] getTargetPosition() {
 		// 타겟 y 좌표, x 좌표, 거리
+		// * 계속 틀렸던 이유 : 충분히 큰 값을 설정하지 않아 오류가 계속 
 		int[] target = {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE};
 		
 		Queue<int[]> Q = new LinkedList<>();
