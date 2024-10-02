@@ -6,7 +6,8 @@ public class Main {
 	static int[] dr = { -1, 0, 1, 0 };
 	static int[] dc = { 0, 1, 0, -1 };
 	static int n, m;
-	static int[][] map, distances;
+	static int[][] map;
+	static int[][][] distances;
 	
 	static class Node {
 		int row;
@@ -28,43 +29,33 @@ public class Main {
 		n = Integer.parseInt(st.nextToken());
 		m = Integer.parseInt(st.nextToken());
 		map = new int[n][m];
+		distances = new int[n][m][2];
 		
 		for (int i = 0; i < n; i++) {
 			String line = br.readLine();
 			
 			for (int j = 0; j < m; j++) {
 				map[i][j] = line.charAt(j) - '0';
+				
+				Arrays.fill(distances[i][j], Integer.MAX_VALUE);
 			}
-		}
-		
-		distances = new int[n][m];
-		
-		for (int[] d : distances) {
-			Arrays.fill(d, Integer.MAX_VALUE);
 		}
 		
 		bfs();
 		
-		if (distances[n - 1][m - 1] == Integer.MAX_VALUE) {
-			distances[n - 1][m - 1] = -1;
+		int atTheEnd = Math.min(distances[n - 1][m - 1][0], distances[n - 1][m - 1][1]);
+		
+		if (atTheEnd == Integer.MAX_VALUE) {
+			atTheEnd = -1;
 		}
 		
-		System.out.println(distances[n - 1][m - 1]);
+		System.out.println(atTheEnd);
 	}
 	
 	static void bfs() {
-		Queue<Node> queue = new PriorityQueue<>((n1, n2) -> {
-			if (!n1.crashed && n2.crashed) {
-				return -1;
-			}
-			
-			if (n1.crashed && !n2.crashed) {
-				return 1;
-			}
-			
-			return n1.distance - n2.distance;
-		});
-		distances[0][0] = 1;
+		Queue<Node> queue = new LinkedList<>();
+		distances[0][0][0] = 1;
+		distances[0][0][1] = 1;
 		
 		queue.add(new Node(0, 0, 1, false));
 		
@@ -76,15 +67,23 @@ public class Main {
 				int newRow = current.row + dr[i];
 				int newCol = current.col + dc[i];
 				
-				if (!isInMap(newRow, newCol) || distances[newRow][newCol] <= nextDistance) {
+				if (!isInMap(newRow, newCol)) {
 					continue;
 				}
 				
-				if (current.crashed && map[newRow][newCol] == 1) {
-					continue;
+				if (current.crashed) {
+					if (map[newRow][newCol] == 1 || distances[newRow][newCol][1] <= nextDistance) {
+						continue;
+					}
+					
+					distances[newRow][newCol][1] = nextDistance;
+				} else {
+					if (distances[newRow][newCol][0] <= nextDistance) {
+						continue;
+					}
+					
+					distances[newRow][newCol][0] = nextDistance;
 				}
-				
-				distances[newRow][newCol] = nextDistance;
 				
 				queue.add(new Node(newRow, newCol, nextDistance, current.crashed || map[newRow][newCol] == 1));
 			}
