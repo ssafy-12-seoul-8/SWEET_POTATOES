@@ -1,18 +1,16 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 	
-	static int[] dn = {0, 0, -1, -1, -1, 0, 1, 1, 1};
-	static int[] dm = {0, -1, -1, 0, 1, 1, 1, 0, -1};
+	static int[] dr = {0, 0, -1, -1, -1, 0, 1, 1, 1};
+	static int[] dc = {0, -1, -1, 0, 1, 1, 1, 0, -1};
 	
 	public static void main(String[] args) {
 		
 		/*
 		 * A[r][c] 물의 양 = 무제한
 		 * 경계 = 이동 연결o / 대각선검사 연결x
-		 * 비구름 = (N,1),(N,2),(N-1,1),(N-1,2) -> -1,-1 채로 입력
+		 * 비구름 = (N,1),(N,2),(N-1,1),(N-1,2) -> -1,-1 계산 후 입력
 		 * 1번부터 ←, ↖, ↑, ↗, →, ↘, ↓, ↙
 		 * M번 이동 후 바구니 물의 총합?
 		 * 
@@ -28,82 +26,86 @@ public class Main {
 		int N = sc.nextInt();
 		int M = sc.nextInt();
 		int[][] map = new int[N][N];
-		int[][] cmd = new int[M][2];
+		boolean[][] clouds = new boolean[N][N];
 		
-		for (int n = 0; n < N; n++)
-			for (int m = 0; m < N; m++)
-				map[n][m] = sc.nextInt();
+		for (int r = 0; r < N; r++)
+			for (int c = 0; c < N; c++)
+				map[r][c] = sc.nextInt();
 		
-		for (int q = 0; q < M; q++) {
-			cmd[q][0] = sc.nextInt(); 	// 방향
-			cmd[q][1] = sc.nextInt();	// 이동칸
-		}
-		
-		List<int[]> clouds = new ArrayList<>();
-		clouds.add(new int[] {N-1, 0});
-		clouds.add(new int[] {N-1, 1});
-		clouds.add(new int[] {N-2, 0});
-		clouds.add(new int[] {N-2, 1});
+		clouds[N-1][0] = true;
+		clouds[N-1][1] = true;
+		clouds[N-2][0] = true;
+		clouds[N-2][1] = true;
 		
 		for (int q = 0; q < M; q++) {
 			
-			int d = cmd[q][0];
-			int s = cmd[q][1];
+			int d = sc.nextInt();
+			int s = sc.nextInt();
 			
-			for (int[] cloud : clouds) {
-				
-				// 1. d방향으로 s칸 이동 -> 경계이동 처리
-				cloud[0] = (cloud[0] + dn[d] * s + 100 * N) % N;
-				cloud[1] = (cloud[1] + dm[d] * s + 100 * N) % N;
-				
-				// 2. 구름칸 물 +1
-				map[cloud[0]][cloud[1]]++;
-			}
-			
-			for (int[] cloud : clouds) {
-				
-				int nNow = cloud[0];
-				int mNow = cloud[1];
-				
-				// 4. (2)에서 증가한 칸(r,c)의 대각선거리1 물>0 바구니 수만큼 (r,c)에 증가
-				for (int dd = 2; dd <= 8; dd += 2) {
+			// ---
+			boolean[][] newClouds = new boolean[N][N];
+			for (int r = 0; r < N; r++) {
+				for (int c = 0; c < N; c++) {
 					
-					int nNext = nNow + dn[dd];
-					int mNext = mNow + dm[dd];
-					
-					if (nNext < 0 || N <= nNext || mNext < 0 || N <= mNext)
-						continue;
-					
-					if (map[nNext][mNext] > 0)
-						map[nNow][mNow]++;
-				}
-			}
-			
-			// 5. (3)에서 소멸된 칸 제외한 물>=2 칸에 구름 생성 & 물 -2
-			List<int[]> newClouds = new ArrayList<>();
-			
-			for (int n = 0; n < N; n++) {
-				cannotCreate:
-				for (int m = 0; m < N; m++) {
-					
-					for (int[] cloud : clouds)
-						if (n == cloud[0] && m == cloud[1])
-							continue cannotCreate;
-					
-					if (map[n][m] >= 2) {
-						map[n][m] -= 2;
-						newClouds.add(new int[] {n, m});
+					if (clouds[r][c]) {
+						
+						// 1. d방향으로 s칸 이동 -> 경계이동 처리
+						int rNext = (r + dr[d] * s + 100 * N) % N;
+						int cNext = (c + dc[d] * s + 100 * N) % N;
+						
+						newClouds[rNext][cNext] = true;
+
+						// 2. 구름칸 물 +1
+						map[rNext][cNext]++;
 					}
 				}
 			}
 			
+			// 3. 구름 소멸
+			clouds = newClouds;
+			
+			// ---
+			for (int r = 0; r < N; r++) {
+				for (int c = 0; c < N; c++) {
+					
+					if (clouds[r][c]) {
+						// 4. (2)에서 증가한 칸(r,c)의 대각선거리1 물>0 바구니 수만큼 (r,c)에 증가
+						for (int dd = 2; dd <= 8; dd += 2) {
+							
+							int rNext = r + dr[dd];
+							int cNext = c + dc[dd];
+							
+							if (rNext < 0 || N <= rNext || cNext < 0 || N <= cNext)
+								continue;
+							
+							if (map[rNext][cNext] > 0)
+								map[r][c]++;
+						}
+					}
+				}
+			}
+			
+			// ---
+			newClouds = new boolean[N][N];
+			for (int r = 0; r < N; r++) {
+				for (int c = 0; c < N; c++) {
+					
+					if (!clouds[r][c]) {
+						if (map[r][c] >= 2) {
+							map[r][c] -= 2;
+							newClouds[r][c] = true;
+						}
+					}
+				}
+			}
+
 			clouds = newClouds;
 		}
 			
 		int cnt = 0;
-		for (int n = 0; n < N; n++)
-			for (int m = 0; m < N; m++)
-				cnt += map[n][m];
+		for (int r = 0; r < N; r++)
+			for (int c = 0; c < N; c++)
+				cnt += map[r][c];
 
 		System.out.println(cnt);
 	}
