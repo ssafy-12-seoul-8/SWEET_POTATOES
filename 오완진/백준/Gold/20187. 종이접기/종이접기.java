@@ -1,6 +1,12 @@
 import java.util.Scanner;
 
 public class Main {
+	
+	static int[][][] hole = new int[][][] {
+		{{0, 1}, {2, 3}}, {{1, 0}, {3, 2}}, 
+		{{2, 3}, {0, 1}}, {{3, 2}, {1, 0}}
+	};
+	
 	public static void main(String[] args) {
 		
 		Scanner sc = new Scanner(System.in);
@@ -20,34 +26,29 @@ public class Main {
 		 * [1][0] [1][1]
 		 * 
 		 * 기준				-> [0][0]
-		 * R > 0 			-> [0][1]
-		 * D > 0 			-> [1][0]
-		 * R > 0 && D > 0 	-> [1][1]
+		 * RL true 			-> [0][1]
+		 * DU true 			-> [1][0]
+		 * RL true DU true	-> [1][1]
 		 */
 		
-		boolean R = false;
-		boolean D = false;
+		boolean DU = false;
+		boolean RL = false;
 		for (int q = 0; q < cmd.length; q++) {
-			if (cmd[q].equals("R")) R = true;
-			if (cmd[q].equals("D")) D = true;
+			if (cmd[q].equals("D"))			DU = true;
+			else if (cmd[q].equals("U")) 	DU = false;
+			else if (cmd[q].equals("R")) 	RL = true;
+			else 							RL = false;
 		}
 		
-		int[] picked = {0, 0};
+		int[] picked = new int[2];
 		
-		if (R) {
-			if (D)
+		if (RL) {
+			if (DU)
 				picked = new int[] {1, 1};
 			else
 				picked = new int[] {0, 1};
-		} else if (D)
+		} else if (DU)
 			picked = new int[] {1, 0};
-		
-		// static 변수 선언 어떻게??
-		int[][][] hole = new int[4][2][2];
-		hole[0] = new int[][] {{0, 1}, {2, 3}};
-		hole[1] = new int[][] {{1, 0}, {3, 2}};
-		hole[2] = new int[][] {{2, 3}, {0, 1}};
-		hole[3] = new int[][] {{3, 2}, {1, 0}};
 		
 		int tmpR = picked[0];
 		int tmpC = picked[1];
@@ -56,8 +57,7 @@ public class Main {
 			if (hole[i][tmpR][tmpC] == H)
 				holeNum = i;
 		
-		int[][] copy = new int[2][2];
-		copy = hole[holeNum];
+		int[][] copy = hole[holeNum];
 				
 		for (int r = 0; r < N; r++) {
 			for (int c = 0; c <N; c++) {
