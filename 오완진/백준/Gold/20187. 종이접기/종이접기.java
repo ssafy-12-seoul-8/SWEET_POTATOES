@@ -1,4 +1,7 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
 	
@@ -7,38 +10,42 @@ public class Main {
 		{{2, 3}, {0, 1}}, {{3, 2}, {1, 0}}
 	};
 	
-	public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 		
-		Scanner sc = new Scanner(System.in);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
 		
-		int K = sc.nextInt();
-		sc.nextLine();
+        int K = Integer.parseInt(br.readLine().trim());
+        int N = (int) Math.pow(2, K);
 		
-		int N = (int) Math.pow(2, K);
-		
-		String line = sc.nextLine();
-		String[] cmd = line.split(" ");
-		
-		int H = sc.nextInt();
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        int H = Integer.parseInt(br.readLine().trim());
 		
 		/*
+		 * hole[]
 		 * [0][0] [0][1]
 		 * [1][0] [1][1]
 		 * 
-		 * 기준				-> [0][0]
-		 * RL true 			-> [0][1]
-		 * DU true 			-> [1][0]
+		 * DU flse RL flse	-> [0][0]
+		 * DU flse RL true	-> [0][1]
+		 * DU true RL flse	-> [1][0]
 		 * RL true DU true	-> [1][1]
 		 */
 		
 		boolean DU = false;
 		boolean RL = false;
-		for (int q = 0; q < cmd.length; q++) {
-			if (cmd[q].equals("D"))			DU = true;
-			else if (cmd[q].equals("U")) 	DU = false;
-			else if (cmd[q].equals("R")) 	RL = true;
-			else 							RL = false;
-		}
+        while (st.hasMoreTokens()) {
+            String cmd = st.nextToken();
+            if (cmd.equals("D"))
+                DU = true;
+            else if (cmd.equals("U"))
+                DU = false;
+            else if (cmd.equals("R"))
+                RL = true;
+            else
+                RL = false;
+        }
 		
 		int[] picked = new int[2];
 		
@@ -61,9 +68,11 @@ public class Main {
 				
 		for (int r = 0; r < N; r++) {
 			for (int c = 0; c <N; c++) {
-				System.out.print(copy[r%2][c%2] + " ");
+				sb.append(copy[r%2][c%2]).append(" ");
 			}
-			System.out.println();
+			sb.append("\n");
 		}
+		
+		System.out.println(sb);
 	}
 }
