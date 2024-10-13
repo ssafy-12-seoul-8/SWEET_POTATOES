@@ -29,8 +29,8 @@ public class Main {
     		long powL = pow(cntL);
     		long powR = pow(cntR);
     		
-    		long maxScovile = (food[i] * (powL - 1)) % mod;
-    		long minScovile = (food[i] * (powR - 1)) % mod;
+    		long maxScovile = food[i] * (powL - 1);
+    		long minScovile = food[i] * (powR - 1);
     		
     		sum = (sum + maxScovile - minScovile + mod) % mod;
     	}
@@ -39,9 +39,12 @@ public class Main {
 	}
     
     static long pow(int k) {
-    	long result = 1;
-    	for (int i = 0; i < k; i++)
-    		result = (result * 2) % mod;
-    	return result;
+    	if (k == 0)
+    		return 1;
+    	if (k % 2 == 0) {
+    		long half = pow(k / 2);
+    		return (half * half) % mod;
+    	} else
+    		return (2 * pow(k - 1)) % mod;
     }
 }
