@@ -3,24 +3,35 @@ import java.io.InputStreamReader;
 
 public class Main {
 
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) throws Exception {
+
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		int L = Integer.parseInt(br.readLine());
 		
-		String str = br.readLine();
+		String word = br.readLine();
 		
 		int r = 31;
-		long M = 1234567891;
+		long mod = 1234567891;
+		long[] memo = new long[L];
+		memo[0] = 1;
 		
-		long H = 0;
-		for(int i=L-1 ; i>=0 ; i--) {
-			H += (str.charAt(i) - 'a' +1)*Math.pow(r, i)%M;
+		for(int i=1 ; i<L ; i++) {
+			memo[i] = memo[i-1]*r;
+			memo[i] %= mod;
 		}
 		
-		System.out.println(H);
+		long ans = 0;
 		
+		for(int i=0 ; i<L ; i++) {
+			ans += ((word.charAt(i)-'a'+1)*memo[i])%mod;
+			ans %= mod;
+		}
 		
-	}
+		System.out.println(ans);
 
-}
+	} // main
+
+
+
+} // Main class
