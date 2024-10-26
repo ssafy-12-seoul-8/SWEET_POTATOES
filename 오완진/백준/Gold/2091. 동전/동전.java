@@ -8,6 +8,7 @@ public class Main {
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
+		StringBuilder sb = new StringBuilder();
 		
 		int X = Integer.parseInt(st.nextToken());	// X센트
 		int A = Integer.parseInt(st.nextToken());	// 1센트
@@ -121,8 +122,10 @@ public class Main {
 //		System.out.println();
 		
 		if (maxD >= X)
-			System.out.printf("%d %d %d %d", dp[X][0], dp[X][1], dp[X][2], dp[X][3]);
+			sb.append(dp[X][0]).append(" ").append(dp[X][1]).append(" ").append(dp[X][2]).append(" ").append(dp[X][3]);
 		else
-			System.out.println("0 0 0 0");
+			sb.append("0 0 0 0");
+		
+		System.out.println(sb);
 	}
 }
