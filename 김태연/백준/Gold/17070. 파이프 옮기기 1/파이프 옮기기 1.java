@@ -11,6 +11,7 @@ public class Main {
 	static int result = 0;
 	static int[] dr = {0, 1, 1};	// 3시 6시 4.5시
 	static int[] dc = {1, 0, 1};
+	static Queue<int[]> queue = new LinkedList<>();
 	
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -35,7 +36,7 @@ public class Main {
 
 	private static void bfs() {
 		// 시작점 (1,1) 과 (1,2)
-		Queue<int[]> queue = new LinkedList<>();
+//		Queue<int[]> queue = new LinkedList<>();
 		int[] start = new int[3];
 		start[0] = 1;	// head R 
 		start[1] = 2; 	// head C
@@ -62,23 +63,30 @@ public class Main {
 			
 			switch (dir) {
 			case 0 : 
-				customAdd(queue,move(row,column,0));
-				customAdd(queue,move(row,column,2));
+				move(row,column,0);
+				move(row,column,2);
+//				customAdd(queue,move(row,column,0));
+//				customAdd(queue,move(row,column,2));
 				break;
 			case 1 : 
-				customAdd(queue,move(row,column,1));
-				customAdd(queue,move(row,column,2));
+				move(row,column,1);
+				move(row,column,2);
+//				customAdd(queue,move(row,column,1));
+//				customAdd(queue,move(row,column,2));
 				break;
 			case 2 : 
-				customAdd(queue,move(row,column,0));
-				customAdd(queue,move(row,column,1));
-				customAdd(queue,move(row,column,2));
+				move(row,column,0);
+				move(row,column,1);
+				move(row,column,2);
+//				customAdd(queue,move(row,column,0));
+//				customAdd(queue,move(row,column,1));
+//				customAdd(queue,move(row,column,2));
 				break;
 			}
 		}
 	}
 	
-	private static int[] move(int row, int column, int direction) {
+	private static void move(int row, int column, int direction) {
 		int[] nextSpot = new int[3];
 		int nextR = row + dr[direction];
 		int nextC = column + dc[direction];
@@ -90,15 +98,16 @@ public class Main {
 				nextSpot[0] = nextR;
 				nextSpot[1] = nextC;
 				nextSpot[2] = i;
-				if (!canGo(nextR, nextC)) return null;
+				if (!canGo(nextR, nextC)) return;
 			}
 		} else {
 			nextSpot[0] = nextR;
 			nextSpot[1] = nextC;
 			nextSpot[2] = direction;
-			if (!canGo(nextR,nextC)) return null;
+			if (!canGo(nextR,nextC)) return;
 		}
-		return nextSpot;
+		queue.add(nextSpot);
+//		return nextSpot;
 	}
 	
 	private static boolean canGo(int row, int column) {
@@ -113,9 +122,9 @@ public class Main {
 		return row >= 1 && row <= N && column >= 1 && column <= N;
 	}
 	
-	private static void customAdd(Queue<int[]> queue, int[] data) {
-		if (data != null) queue.add(data);
-	}
+//	private static void customAdd(Queue<int[]> queue, int[] data) {
+//		if (data != null) queue.add(data);
+//	}
 
 
 }
