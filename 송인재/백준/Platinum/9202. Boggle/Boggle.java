@@ -6,7 +6,7 @@ public class Main {
   static int[] dr = { -1, -1, -1, 0, 0, 1, 1, 1 };
   static int[] dc = { -1, 0, 1, -1, 1, -1, 0, 1 };
   static int[] scores = { 0, 0, 0, 1, 1, 2, 3, 5, 11 };
-  static Set<String> words = new HashSet<>();
+  static String[] words;
   static char[][] boggle = new char[4][4];
   static boolean[][] visited = new boolean[4][4];
   static boolean found;
@@ -22,9 +22,10 @@ public class Main {
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     int w = Integer.parseInt(br.readLine());
+    words = new String[w];
 
     for (int i = 0; i < w; i++) {
-      words.add(br.readLine());
+      words[i] = br.readLine();
     }
 
     br.readLine();
@@ -42,7 +43,8 @@ public class Main {
             .toCharArray();
       }
 
-      words.forEach(Main::search);
+      Arrays.stream(words)
+              .forEach(Main::search);
       sb.append(score)
           .append(" ")
           .append(pq.peek())
