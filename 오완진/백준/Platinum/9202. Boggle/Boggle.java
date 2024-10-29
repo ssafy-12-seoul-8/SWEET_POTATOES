@@ -1,8 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 public class Main {
 
@@ -11,7 +11,7 @@ public class Main {
 	static int[] score = {0, 0, 0, 1, 1, 2, 3, 5, 11};
 	
 	static int W;
-	static TreeMap<String, Boolean>[] words, copys;
+	static HashMap<String, Boolean>[] words, copys;
 	static char[][] board;
 	static boolean[][] visited;
 	static int totalScore, wordCnt, longgestWordLength;
@@ -25,9 +25,9 @@ public class Main {
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		W = Integer.parseInt(st.nextToken());
 		
-		words = new TreeMap[9];
+		words = new HashMap[9];
 		for (int i = 1; i <= 8; i++)
-			words[i] = new TreeMap<>();
+			words[i] = new HashMap<>();
 		
 		for (int w = 0; w < W; w++) {
 			String line = br.readLine();
@@ -46,9 +46,9 @@ public class Main {
 			
 			if (tc != TC) br.readLine();
 			
-			copys = new TreeMap[9];
+			copys = new HashMap[9];
 			for (int i = 1; i <= 8; i++)
-				copys[i] = new TreeMap<>(words[i]);
+				copys[i] = new HashMap<>(words[i]);
 			
 			/* 
 			 * 출력
@@ -60,7 +60,7 @@ public class Main {
 			 * 5 11점 	8
 			 * 
 			 * 중복 단어 = 한 번만 카운트 ~ totalScore++ & wordCnt++
-			 * copys[길이] ~ 해당 단어 찾으면 value: false
+			 * copys[길이] ~ 해당 단어 찾으면 value: false -> true
 			 * 가장 긴단어 : 사전 순 우선
 			 * longgestWordLength 동일 ~ compareLonggestWord
 			 * longgestWordLength 갱신 ~ longgestWord 등록
