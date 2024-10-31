@@ -12,19 +12,19 @@ public class Main {
         StringBuilder sb = new StringBuilder();
         
         int N = Integer.parseInt(st.nextToken());
-        long[] nums = new long[N];
+        int[] nums = new int[N];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
-        	nums[i] = Long.parseLong(st.nextToken());
+        	nums[i] = Integer.parseInt(st.nextToken());
         }
         Arrays.sort(nums);
         
         st = new StringTokenizer(br.readLine());
         int M = Integer.parseInt(st.nextToken());
-        long[] targets = new long[M];
+        int[] targets = new int[M];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < M; i++) {
-        	targets[i] = Long.parseLong(st.nextToken());
+        	targets[i] = Integer.parseInt(st.nextToken());
         }
         
         for (int i = 0; i < M; i++) {
