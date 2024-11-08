@@ -22,6 +22,8 @@ public class Main {
 			}
 		}
 		
+		StringBuilder sb = new StringBuilder();
+		
 		for (int i = 0; i < q; i++) {
 			st = new StringTokenizer(br.readLine());
 			int l = Integer.parseInt(st.nextToken()) - 1;
@@ -35,10 +37,11 @@ public class Main {
 				mul -= popMul[l - 1];
 			}
 			
-			long fun = (sum * sum - mul) / 2; 
-			
-			System.out.println(fun);
+			sb.append((sum * sum - mul) / 2)
+				.append(System.lineSeparator());
 		}
+		
+		System.out.print(sb);
 	}
 	
 }
