@@ -1,27 +1,21 @@
 import sys
 sys.setrecursionlimit(10000)
-input=sys.stdin.readline
-def queen(i,col):
-    global count,n
-    if col[0]==-1:
-        for j in range(n):
-            col[0]=j
-            queen(0,col)
-    else:
-        f=0
-        for j in range(i):
-            if col[i]==col[j] or abs(col[i]-col[j])==i-j:
-                f=1
-                break
-        if f==0:
-            if i==n-1:
-                count=count+1
-            else:
-                for j in range(n):
-                    col[i+1]=j
-                    queen(i+1,col)
-n=int(input())
-count=0
-d=[-1]*n
-queen(0,d)
-print(count)
+def btk(cur):
+    global cnt
+    if cur >= N:
+        cnt += 1
+        return
+    for j in range(N):
+        if col[j] and diag1[cur - j + N - 1] and diag2[cur + j]:
+            col[j] = diag1[cur - j + N - 1] = diag2[cur + j] = False
+            btk(cur + 1)
+            col[j] = diag1[cur - j + N - 1] = diag2[cur + j] = True
+
+
+N = int(input())
+cnt = 0
+col = [True] * N
+diag1 = [True] * (2 * N - 1)  # 정방향대각선 (오른쪽 아래)
+diag2 = [True] * (2 * N - 1)  # 역방향대각선 (왼쪽 아래)
+btk(0)
+print(cnt)
