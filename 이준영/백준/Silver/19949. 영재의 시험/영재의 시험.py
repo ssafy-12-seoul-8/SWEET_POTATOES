@@ -1,36 +1,33 @@
-def btk(cur, cont, l_num, score):  # 몇번째, 연속한 횟수, 마지막 수, 점수
-    global cnt
-
-    if score - cur + 5 < 0:     # 다 맞아도 안됨
-        return
-    
-    if cur == 10:               # 끝까지 왔다.
-        if score >= 5:
-            cnt += 1
-        return
-
-    if cont <= 1:               # 연속한 횟수가 1이하이면 아무거나 와도 된다.
-        for i in range(1, 6):   
-            tmp1 = cont         # 연속한 횟수와 점수는 조건문으로 관리
-            tmp2 = score
-            if i == l_num:
-                tmp1 += 1
-            else:
-                tmp1 = 1
-            if i == arr[cur]:
-                tmp2 += 1
-            btk(cur + 1, tmp1, i, tmp2)
-    else:                       # 연속한 횟수가 2면 무조건 이전 번호와 다르게 찍는다.
-        for i in range(1, 6):
-            if i == l_num:
-                continue
-            tmp2 = score
-            if i == arr[cur]:
-                tmp2 += 1
-            btk(cur + 1, 1, i, tmp2)
-
-
+# dp 풀이
 arr = list(map(int, input().split()))
+dp = [[[[0] * 11 for _ in range(3)] for _ in range(6)] for _ in range(10)]
+
+dp[0][arr[0]][1][1] = 1
+for i in range(1, 6):
+    if i != arr[0]:
+        dp[0][i][1][0] = 1
+
+for i in range(9):
+    for j in range(1, 6):
+        for k in range(1, 3):
+            for l in range(i + 2):
+                for cur in range(1, 6):
+                    tmp = l
+                    if cur == arr[i + 1]:
+                        tmp += 1
+
+                    if cur == j:
+                        if k == 2:
+                            continue
+                        dp[i + 1][cur][k + 1][tmp] += dp[i][j][k][l]
+                    else:
+                        dp[i + 1][cur][1][tmp] += dp[i][j][k][l]
+
 cnt = 0
-btk(0, 0, 0, 0)
+
+for j in range(1, 6):
+    for k in range(1, 3):
+        for l in range(5, 11):
+            cnt += dp[9][j][k][l]
+
 print(cnt)
