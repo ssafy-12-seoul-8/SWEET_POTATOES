@@ -1,4 +1,10 @@
-# 15:20
+# 풀이시간: 12분
+# 제출횟수: 1회
+# 메모리:
+# 시간:
+# 
+import sys
+input = sys.stdin.readline
 T = int(input())
 for _ in range(T):
     N = int(input())
