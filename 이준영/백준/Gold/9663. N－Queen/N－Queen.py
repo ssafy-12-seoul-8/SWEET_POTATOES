@@ -1,5 +1,10 @@
+# 퀸은 하나의 행에 하나만 놓을 수 있기 떄문에 각 행에 놓을 위치를 선정해주면 된다.
+# 그 과정에서 같은 열에 퀸이 없고 두 대각선 방향으로도 퀸이 없어야 한다.
 import sys
+
 sys.setrecursionlimit(10000)
+
+
 def btk(cur):
     global cnt
     if cur >= N:
