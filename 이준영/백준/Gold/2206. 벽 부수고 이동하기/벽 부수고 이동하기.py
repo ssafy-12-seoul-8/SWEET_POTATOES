@@ -11,15 +11,14 @@ for i in range(N):
 dy = [0, 0, 1, -1]
 dx = [1, -1, 0, 0]
 
+visited[0][0] = [True, True]
 dq = deque([(0, 0, 0, 0)])  # 이동거리, 벽부신 횟수, y좌표, x좌표
 ans = -2
-while dq:
-    dis, cnt, y, x = dq.popleft()
-    if not visited[y][x][cnt]:
-        visited[y][x][cnt] = True
-        if (y, x) == (N - 1, M - 1):
-            ans = dis
-            break
+if N==1 and M==1:
+    ans = 0
+else:
+    while dq:
+        dis, cnt, y, x = dq.popleft()
         for k in range(4):
             ny = y + dy[k]
             nx = x + dx[k]
@@ -28,6 +27,13 @@ while dq:
                 if cur_cnt >= 2:
                     continue
                 elif not visited[ny][nx][cur_cnt]:
+                    visited[ny][nx][cur_cnt] = True
                     dq.append((dis + 1, cur_cnt, ny, nx))
+                    if ny == N - 1 and nx == M - 1:
+                        ans = dis + 1
+                        break
+
+        if ans != -2:
+            break
 
 print(ans + 1)
