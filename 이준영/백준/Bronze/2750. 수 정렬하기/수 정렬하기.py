@@ -3,50 +3,39 @@ import sys
 input = sys.stdin.readline
 
 
-def my_len(list1):
-    count = 0
-    for i in list1:
-        count += 1
-    return count
+def quick(left, right):
+    if right - left <= 0:
+        return
 
+    pivot = arr[left]
+    i = left + 1
+    j = right
 
-def sorting(list1):
-    length = my_len(list1)
-    if length == 1:
-        return list1
+    while i < j:
+        while i < j and pivot > arr[i]:
+            i = i + 1
+
+        while i < j and pivot < arr[j]:
+            j = j - 1
+
+        arr[i], arr[j] = arr[j], arr[i]
+
+    if arr[i] < pivot:
+        arr[i], arr[left] = arr[left], arr[i]
+        location = i
     else:
-        i = 0
-        j = 0
-        count = 0
-        list2 = sorting(list1[:length // 2])
-        list3 = sorting(list1[length // 2:])
-        list4 = []
-        while count < length:
-            if i >= length // 2:
-                list4.append(list3[j])
-                count += 1
-                j += 1
-            elif j >= (length + 1) // 2:
-                list4.append(list2[i])
-                count += 1
-                i += 1
-            else:
-                count += 1
-                if list2[i] > list3[j]:
-                    list4.append(list3[j])
-                    j += 1
-                else:
-                    list4.append(list2[i])
-                    i += 1
-        return list4
+        arr[i - 1], arr[left] = arr[left], arr[i - 1]
+        location = i - 1
+
+    quick(left, location - 1)
+    quick(location + 1, right)
 
 
-n = int(input())
-num_list = []
-for i in range(n):
-    num = int(input())
-    num_list.append(num)
-num_list = sorting(num_list)
-for num in num_list:
-    print(num)
+N = int(input())
 
+arr = [int(input()) for _ in range(N)]
+
+quick(0, N - 1)
+
+for i in range(N):
+    print(arr[i])
