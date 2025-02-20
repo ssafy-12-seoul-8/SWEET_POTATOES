@@ -16,29 +16,29 @@ def calc(do):
         case 1:
             for i in range(N):
                 for j in range(M):
-                    tmp[i][j] = arr[N - 1 - i][j]
+                    tmp[i][j] = arr[N - 1 - i][j]                   # 상하 반전이므로 열에서 바꾸자
 
         case 2:
             for i in range(N):
                 for j in range(M):
-                    tmp[i][j] = arr[i][M - 1 - j]
+                    tmp[i][j] = arr[i][M - 1 - j]                   # 좌우 반전이니까 행내에서 바꾸자
 
         case 3:
             for i in range(M):
                 for j in range(N):
-                    tmp[i][j] = arr[N - 1 - j][i]
-            N, M = M, N
+                    tmp[i][j] = arr[N - 1 - j][i]                   # (i,j)는 (N-1-j,i)에서 온다.
+            N, M = M, N                                             # N이 열의 크기, M이 행의 크기로 하기 위해 스위칭
 
         case 4:
             for i in range(M):
                 for j in range(N):
-                    tmp[i][j] = arr[j][M - 1 - i]
-            N, M = M, N
+                    tmp[i][j] = arr[j][M - 1 - i]                   # (i,j)는 (j,M-1-i)에서 온다.
+            N, M = M, N                                             # N이 열의 크기, M이 행의 크기로 하기 위해 스위칭
 
         case 5:
             for i in range(N):
                 for j in range(M):
-                    if i < N // 2 and j < M // 2:  # (i,j)는 4구역에 따라 규칙성이 달라진다.
+                    if i < N // 2 and j < M // 2:                   # (i,j)는 4구역에 따라 규칙성이 달라진다.
                         y = i + N // 2
                         x = j
                     elif i < N // 2 and j >= M // 2:
@@ -55,7 +55,7 @@ def calc(do):
         case 6:
             for i in range(N):
                 for j in range(M):
-                    if i < N // 2 and j < M // 2:
+                    if i < N // 2 and j < M // 2:                   # (i,j)는 4구역에 따라 규칙성이 달라진다.
                         y = i
                         x = j + M // 2
                     elif i < N // 2 and j >= M // 2:
