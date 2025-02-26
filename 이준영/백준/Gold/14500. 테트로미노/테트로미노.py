@@ -1,8 +1,3 @@
-# 마지막 모양을 제외하고는 끝점에서 dfs를 통해 찾을 수 있는 모양들이다.
-# 따라서 dfs를 각 점에서 수행하여 최대값을 갱신한 후
-# 마지막 모양에 대해서는 따로 for문을 돌려 최대값을 갱신해야 한다.
-# 이중 for문을 도는 걸 잘 생각해보면 백트래킹시 위로 가는 방향은 고려하지 않아도 된다.
-
 import sys
 
 input = sys.stdin.readline
@@ -10,6 +5,9 @@ input = sys.stdin.readline
 # 마지막 모양을 제외하고 모두 탐색가능
 def btk(y, x, cnt, sm):                                             # 현재 y좌표, x좌표, 지난 칸수, 합
     global mx
+    if sm + (4 - cnt) * tot_mx <= mx:
+        return
+    
     if cnt == 4:                                                    # 4칸이면 최대값 갱신
         mx = max(mx, sm)
         return
@@ -25,6 +23,7 @@ def btk(y, x, cnt, sm):                                             # 현재 y�
 
 n, m = map(int, input().split())
 arr = [list(map(int, input().split())) for _ in range(n)]
+tot_mx = max(map(max,arr))
 
 mx = 0
 
