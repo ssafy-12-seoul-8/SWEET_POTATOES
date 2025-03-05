@@ -1,6 +1,6 @@
 # 제출횟수: 1회
-# 메모리: 455832KB
-# 시간: 1712ms
+# 메모리: 338360KB
+# 시간: 1032ms
 # 각 인원의 set과 전체 set을 따로 관리해서 문제를 풀었지만 문제의 제한 사항을 보니 안그래도 되더라...
 import sys
 
@@ -8,12 +8,12 @@ input = sys.stdin.readline
 
 
 def do(s, target):                                              # s명령을 target이 실행
-    if s[1] == "next":  
+    if s[1][0] == "n":  
         own[target] = -1                                        # 카드 버리기
         return
 
     n = int(s[2])
-    if s[1] == "acquire":                                       
+    if s[1][0] == "a":                                       
         if n in tot_set:                                        # 다른 사람 자원에 있으면 아무것도 안함
             return
         else:                                                   # 없으면 가져온다.
@@ -37,17 +37,19 @@ for i in range(T):
 
 idx = 0
 
-tot_set = set([])  # 전체가 소지한 자원
-own = [-1] * (N + 1)  # 내가 소유한 연산카드 인덱스
-
+tot_set = set([])                                               # 전체가 소지한 자원
+own = [-1] * (N + 1)                                            # 내가 소유한 연산카드 인덱스
+ans = []
 for i in range(T):
     target = order[i]
-    if own[target] == -1:
-        own[target] = card[idx][0]
-        print(own[target])
+    if own[target] == -1:                                       # 내가 연산카드 안 가지고 있으면 
+        own[target] = card[idx][0]                              # 가져오고
+        ans.append(str(own[target]))
         idx += 1
-        do(op[own[target]], target)
+        do(op[own[target]], target)                             # 연산 실행
 
     else:
-        print(own[target])
+        ans.append(str(own[target]))
         do(op[own[target]], target)
+
+print("\n".join(ans))
