@@ -11,7 +11,7 @@ def btk(l, cur):
                 ans = ans * 10 + idx[k]
         return
 
-    for k in range(cur):
+    for k in range(i - 1 - l, cur):
         idx[l] = k
         btk(l + 1, k)
 
