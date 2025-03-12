@@ -5,8 +5,11 @@ input = sys.stdin.readline
 
 def btk(cur, y, x, hp, u, d):
     global mn
+    if d + abs(y - e_y) + abs(x - e_x) >= mn:
+        return
+
     if abs(y - e_y) + abs(x - e_x) <= hp + u:
-        mn = min(mn, d + abs(y - e_y) + abs(x - e_x))
+        mn = d + abs(y - e_y) + abs(x - e_x)
 
     if cur == l:
         return
