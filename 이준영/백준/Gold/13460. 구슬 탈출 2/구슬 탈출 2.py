@@ -8,9 +8,7 @@ def btk(cur, ry, rx, by, bx, ld):  # 이번에 움직일 횟수, 빨간공좌표
     if ans <= cur:  # 이미 답을 갱신못하므로 리턴
         return
 
-    for k in range(4):
-        if k == ld:
-            continue
+    for k in nd[ld]:
         sry, srx = move(ry, rx, k)  # 빨간 공을 움직이고
         sby, sbx = move(by, bx, k)  # 파란 공 움직이자.
         if arr[sby][sbx] == "O":  # 파란공이 들어가면 실패
@@ -77,8 +75,8 @@ for i in range(N):
 
 ans = 11
 
-btk(1, ry, rx, by, bx, -1)
-
+nd = [[2, 3], [2, 3], [0, 1], [0, 1], [0, 1, 2, 3]]
+btk(1, ry, rx, by, bx, 4)
 if ans == 11:  # 11 갱신안되면 실패
     print(-1)
 else:
