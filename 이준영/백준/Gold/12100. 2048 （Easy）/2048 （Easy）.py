@@ -1,101 +1,133 @@
-import sys
-input=sys.stdin.readline
-def left(state,length):
-    b=[[0 for _ in range(length)] for _ in range(length)]
-    for i in range(length):
-        stack=[]
-        for j in range(length):
-            k=0
-            a=state[i][j]
-            if a!=0:
-                if not stack:
-                    stack.append(a)
-                elif a==stack[-1]:
-                    stack[-1]=2*a
-                    stack.append(0)
-                else:
-                    stack.append(a)
-        for j in stack:
-            if j!=0:
-                b[i][k]=j
-                k+=1
-    return b
-def right(state,length):
-    b=[[0 for _ in range(length)] for _ in range(length)]
-    for i in range(length):
-        stack=[]
-        for j in range(length-1,-1,-1):
-            k=length-1
-            a=state[i][j]
-            if a!=0:
-                if not stack:
-                    stack.append(a)
-                elif a==stack[-1]:
-                    stack[-1]=2*a
-                    stack.append(0)
-                else:
-                    stack.append(a)
-        for j in stack:
-            if j!=0:
-                b[i][k]=j
-                k-=1
-    return b
-def up(state,length):
-    b=[[0 for _ in range(length)] for _ in range(length)]
-    for j in range(length):
-        stack=[]
-        for i in range(length):
-            k=0
-            a=state[i][j]
-            if a!=0:
-                if not stack:
-                    stack.append(a)
-                elif a==stack[-1]:
-                    stack[-1]=2*a
-                    stack.append(0)
-                else:
-                    stack.append(a)
-        for i in stack:
-            if i!=0:
-                b[k][j]=i
-                k+=1
-    return b
-def down(state,length):
-    b=[[0 for _ in range(length)] for _ in range(length)]
-    for j in range(length):
-        stack=[]
-        for i in range(length-1,-1,-1):
-            k=length-1
-            a=state[i][j]
-            if a!=0:
-                if not stack:
-                    stack.append(a)
-                elif a==stack[-1]:
-                    stack[-1]=2*a
-                    stack.append(0)
-                else:
-                    stack.append(a)
-        for i in stack:
-            if i!=0:
-                b[k][j]=i
-                k-=1
-    return b
-def bt(state,length,count):
-    global maximum
-    if count==5:
-        for i in range(length):
-            for j in range(length):
-                maximum=max(maximum,state[i][j])
-    else:
-        bt(up(state,length),length,count+1)
-        bt(down(state,length),length,count+1)
-        bt(left(state,length),length,count+1)
-        bt(right(state,length),length,count+1)
+def move_left(a):
+    tmp = [[0] * N for _ in range(N)]
+    for i in range(N):
+        stk = []
+        for j in range(N):
+            if a[i][j] == 0:
+                continue
+            if not stk:
+                stk.append(a[i][j])
+            elif stk[-1] == a[i][j]:
+                stk.pop()
+                stk.extend((2 * a[i][j], 0))
+            else:
+                stk.append(a[i][j])
 
-n=int(input())     
-d=[0]*n
-maximum=0
-for i in range(n):
-    d[i]=list(map(int,input().split()))
-bt(d,n,0)
-print(maximum)
+        k = 0
+        for j in stk:
+            if j == 0:
+                continue
+            tmp[i][k] = j
+            k += 1
+
+    t_mx = max(map(max, tmp))
+
+    return tmp, t_mx
+
+
+def move_right(a):
+    tmp = [[0] * N for _ in range(N)]
+    for i in range(N):
+        stk = []
+        for j in range(N - 1, -1, -1):
+            if a[i][j] == 0:
+                continue
+            if not stk:
+                stk.append(a[i][j])
+            elif stk[-1] == a[i][j]:
+                stk.pop()
+                stk.extend((2 * a[i][j], 0))
+            else:
+                stk.append(a[i][j])
+
+        k = N - 1
+        for j in stk:
+            if j == 0:
+                continue
+            tmp[i][k] = j
+            k -= 1
+
+    t_mx = max(map(max, tmp))
+
+    return tmp, t_mx
+
+
+def move_up(a):
+    tmp = [[0] * N for _ in range(N)]
+    for j in range(N):
+        stk = []
+        for i in range(N):
+            if a[i][j] == 0:
+                continue
+            if not stk:
+                stk.append(a[i][j])
+            elif stk[-1] == a[i][j]:
+                stk.pop()
+                stk.extend((2 * a[i][j], 0))
+            else:
+                stk.append(a[i][j])
+
+        k = 0
+        for i in stk:
+            if i == 0:
+                continue
+            tmp[k][j] = i
+            k += 1
+
+    t_mx = max(map(max, tmp))
+
+    return tmp, t_mx
+
+
+def move_down(a):
+    tmp = [[0] * N for _ in range(N)]
+    for j in range(N):
+        stk = []
+        for i in range(N - 1, -1, -1):
+            if a[i][j] == 0:
+                continue
+            if not stk:
+                stk.append(a[i][j])
+            elif stk[-1] == a[i][j]:
+                stk.pop()
+                stk.extend((2 * a[i][j], 0))
+            else:
+                stk.append(a[i][j])
+
+        k = N - 1
+        for i in stk:
+            if i == 0:
+                continue
+            tmp[k][j] = i
+            k -= 1
+
+    t_mx = max(map(max, tmp))
+
+    return tmp, t_mx
+
+
+def btk(cur, mx_num, a):
+    global mx
+
+    mx = max(mx, mx_num)
+    if cur == 5:
+        return
+
+    tmp, t_num = move_left(a)
+    btk(cur + 1, t_num, tmp)
+    tmp, t_num = move_right(a)
+    btk(cur + 1, t_num, tmp)
+    tmp, t_num = move_up(a)
+    btk(cur + 1, t_num, tmp)
+    tmp, t_num = move_down(a)
+    btk(cur + 1, t_num, tmp)
+
+
+N = int(input())
+arr = [list(map(int, input().split())) for _ in range(N)]
+
+mx = max(map(max, arr))
+
+btk(0, mx, arr)
+
+print(mx)
