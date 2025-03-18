@@ -1,12 +1,13 @@
+# 리팩토링 코드 (반시계 방향을 그냥 배열을 뒤집는 것으로 반영)
 # 어떤 면을 기준으로 할 때 12개의 숫자들이 3칸씩 돌아가게 되고
 # 회전한 면은 8개의 숫자가 2개씩 돌아가게 된다.
 # 그 2개의 정보를 미리 저장해 놓고 회전의 유형에 따라 큐브를 돌렸다.
-# cube의 경우 전개도를 그려서 숫자를 0~53을 매겼다. 
-# 0~8: 뒷면, 9~17: 왼쪽면, 18~26: 윗면, 27~35: 오른쪽면, 36~44:아랫면, 45~53:앞면 
+# cube의 경우 전개도를 그려서 숫자를 0~53을 매겼다.
+# 0~8: 뒷면, 9~17: 왼쪽면, 18~26: 윗면, 27~35: 오른쪽면, 36~44:아랫면, 45~53:앞면
 
 
 T = int(input())
-# 각 면을 기준으로 시계방향으로 돌리게 되면 오른쪽으로 3칸씩 간다. 
+# 각 면을 기준으로 시계방향으로 돌리게 되면 오른쪽으로 3칸씩 간다.
 # 예를 들어 U+의 경우 27번 칸에 6번이, 30번칸에 7번칸이 가는 등....
 # 반시계 방향은 위와 반대로 왼쪽으로 3칸씩 간다.
 # 예를 들어 U-의 경우 6번칸에 27번이, 7번칸에 30번이 간다.
@@ -34,77 +35,58 @@ for _ in range(T):
     n = int(input())
 
     cube = [0] * 54
-    
+
     # 큐브 칠하기
-    for i in range(54):                 
-        
+    for i in range(54):
+
         match i // 9:               # 9로 나눈 몫으로 색을 정할 수 있다.
             case 0:                 # 뒷 면
                 cube[i] = "o"
             case 1:                 # 왼쪽 면
                 cube[i] = "g"
             case 2:                 # 윗 면
-                cube[i] = "w"       
+                cube[i] = "w"
             case 3:                 # 오른쪽 면
-                cube[i] = "b"       
+                cube[i] = "b"
             case 4:                 # 아랫 면
                 cube[i] = "y"
             case 5:                 # 앞 면
                 cube[i] = "r"
 
     lst = input().split()
-    
+
     for s in lst:
         t, d = s[0], s[1]           # t는 돌릴 면, d는 방향
         tmp1 = big_rotate[t]        # 대회전 배열
         tmp2 = small_rotate[t]      # 소회전 배열
 
         # 시계 방향 회전
-        if d == "+":
-            # 대회전 (12개 칸 회전)
-            t_arr = []
-            for i in (9, 10, 11):                       # t_arr에 배열의 9,10,11 번 인덱스에 해당하는 칸의 색을 저장
-                t_arr.append(cube[tmp1[i]])
-                
-            for i in range(11, 2, -1):                  # 3칸씩 당기면서 색을 옮겨줌
-                cube[tmp1[i]] = cube[tmp1[i - 3]]
+        if d == "-":                # 반시계면 배열을 뒤집자.
+            tmp1 = tmp1[::-1]
+            tmp2 = tmp2[::-1]
 
-            for i in range(3):                          # 처음 임시 배열의 색으로 3개 칸을 칠해줌
-                cube[tmp1[i]] = t_arr[i]
+        # 대회전 (12개 칸 회전)
+        t_arr = []
+        for i in (9, 10, 11):                       # t_arr에 배열의 9,10,11 번 인덱스에 해당하는 칸의 색을 저장
+            t_arr.append(cube[tmp1[i]])
 
-            # 소회전 (8개 칸 회전)
-            t_arr = []
-            for i in (6, 7):                            # 6,7번 인덱스에 해당하는 칸의 색 저장
-                t_arr.append(cube[tmp2[i]])
-                
-            for i in range(7, 1, -1):                   # 2칸씩 당기면서 색을 옮겨줌
-                cube[tmp2[i]] = cube[tmp2[i - 2]]
+        for i in range(11, 2, -1):                  # 3칸씩 당기면서 색을 옮겨줌
+            cube[tmp1[i]] = cube[tmp1[i - 3]]
 
-            for i in (0, 1):                            # 처음 임시 배열의 색으로 2개 칸을 칠해줌
-                cube[tmp2[i]] = t_arr[i]
-        
-        # 반시계 방향은 위에서 방향만 바뀐 것 (헷갈리면 reverse를 해서 해도 됨)
-        else:
-            t_arr = []
-            for i in (0, 1, 2):
-                t_arr.append(cube[tmp1[i]])
-                
-            for i in range(9):
-                cube[tmp1[i]] = cube[tmp1[i + 3]]
-                
-            for i in range(3):
-                cube[tmp1[i + 9]] = t_arr[i]
+        for i in range(3):                          # 처음 임시 배열의 색으로 3개 칸을 칠해줌
+            cube[tmp1[i]] = t_arr[i]
 
-            t_arr = []
-            for i in (0, 1):
-                t_arr.append(cube[tmp2[i]])
-                
-            for i in range(6):
-                cube[tmp2[i]] = cube[tmp2[i + 2]]
-                
-            for i in (0, 1):
-                cube[tmp2[i + 6]] = t_arr[i]
-    
+        # 소회전 (8개 칸 회전)
+        t_arr = []
+        for i in (6, 7):                            # 6,7번 인덱스에 해당하는 칸의 색 저장
+            t_arr.append(cube[tmp2[i]])
+
+        for i in range(7, 1, -1):                   # 2칸씩 당기면서 색을 옮겨줌
+            cube[tmp2[i]] = cube[tmp2[i - 2]]
+
+        for i in (0, 1):                            # 처음 임시 배열의 색으로 2개 칸을 칠해줌
+            cube[tmp2[i]] = t_arr[i]
+
     for i in range(3):                              # 윗면 출력
         for j in range(3):
             print(cube[18 + 3 * i + j], end="")
