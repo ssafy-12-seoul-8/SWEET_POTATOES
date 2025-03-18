@@ -14,6 +14,7 @@ move = [[1, -1, -1, 2],
 distance = [[-1] * N for _ in range(N)]
 cnt = 0
 distance[0][0] = 0
+
 if move[arr[0][0]][1] != -1:
     distance[0][0] = 1
     y, x = 0, 0
@@ -70,11 +71,19 @@ else:
                     nx = x + dx[k]
                     if 0 <= ny < N and 0 <= nx < N:
                         if distance[ny][nx] > 0:
-                            if k in move[arr[y][x]] or (k + 2) % 4 in move[arr[ny][nx]]:
+                            if k == move[arr[y][x]][d] or (k + 2) % 4 in move[arr[ny][nx]]:
                                 mn = min(mn, distance[ny][nx] + dis)
                         elif distance[ny][nx] == 0:
                             if k in move[arr[y][x]]:
                                 mn = min(mn, dis + 1)
+                        elif k == move[arr[y][x]][d]:
+                            flag = True
+                            for l in range(4):
+                                nny = ny + dy[l]
+                                nnx = nx + dx[l]
+                                if 0 <= nny < N and 0 <= nnx < N and distance[nny][nnx] > 0 and (l + 2) % 4 in move[
+                                    arr[nny][nnx]]:
+                                    mn = min(mn, distance[nny][nnx] + dis + 1)
 
                 nd = move[arr[y][x]][d]
                 ny = y + dy[nd]
@@ -89,7 +98,7 @@ else:
                 else:
                     break
 
-            if mn == 2501:
-                print(-1)
-            else:
-                print(mn)
+        if mn == 2501:
+            print(-1)
+        else:
+            print(mn)
