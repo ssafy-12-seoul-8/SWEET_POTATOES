@@ -1,3 +1,4 @@
+# 리팩토링 코드 (첫 어항 쌓기로 lst의 각 어항이 갈 좌표를 미리 저장해 놓고 시작
 # 시작과 동시에 어항의 최대, 최소의 차이가 K개이하일 수 있으니 시작할 때 합니다.
 # check를 할 떄 최소값 리스트를 같이 관리하는게 좋을 것 같아 check에서 조건을 만족하지 않으면 물고기가 적은 어항들에
 # 물고기를 추가하고 False를 리턴하고, 조건을 만족하면 그냥 True를 리턴하였습니다.
@@ -14,6 +15,7 @@ def myprint(arr):
             print("%-3s" % arr[i][j], end="")
         print()
     print("-" * 50)
+
 
 # 체크함수입니다.
 # 순회를 하며 최소값 리스트를 같이 들고 다닙니다.
@@ -39,48 +41,66 @@ def check():
         lst[i] += 1
     return False
 
-# 첫번째 로직으로 어항을 쌓는 함수
-# 1차원 리스트를 받아서 어항이 쌓인 상태인 2차원 배열을 반환한다.
-def change1(lst):
-    arr = [[0] * (N - 2) for _ in range(2)]                 # 일단 한번 쌓고 시작하려고 2*N-2배열을 잡았다.
-    arr[1] = lst[2:]                                        # 1행은 lst의 2번째 부터 끝까지이고
-    arr[0][0], arr[0][1] = lst[1], lst[0]                   # 0행 0열, 0행 1열은 1번째, 0번째 수이다.
+# 전처리 함수
+# 리스트의 각 인덱스가 첫 어항 쌓기에서 어떤 배열을 만드는지 미리 저장해 놓은 것이다.
+# 새로운 베열의 가로길이, 세로길이, 각 리스트의 원소가 어디로 가는지 저장한 배열을 리턴한다.
+def make_changeset():
+    arr = [[0] * (N - 2) for _ in range(2)]  # 일단 한번 쌓고 시작하려고 2*N-2배열을 잡았다.
+    arr[1] = [i for i in range(3, N + 1)]
+    arr[0][0], arr[0][1] = 2, 1  # 0행 0열, 0행 1열은 1번째, 0번째 수이다.
 
-    y, x, z = 2, 2, N - 4                                   # 각각 arr에서 최대 높이, 최대 높이의 개수, 높이가 1인 어항의 개수 이다.
+    y, x, z = 2, 2, N - 4  # 각각 arr에서 최대 높이, 최대 높이의 개수, 높이가 1인 어항의 개수 이다.
 
     while True:
-        if y > z:                                           # 만약 최대높이가 높이가 1인 어항의 수보다 많으면 쌓지 못한다.
-            return arr                                      # 끝
+        if y > z:  # 만약 최대높이가 높이가 1인 어항의 수보다 많으면 쌓지 못한다.
+            break  # 끝
 
-        t_arr = [[0] * z for _ in range(x + 1)]             # 아니면 쌓을 수 있는데 이 때 배열은 x+1*z가 된다. (그림으로 확인해볼것)
-        t_arr[x] = arr[y - 1][x:]                           # 마지막 행은 arr의 마지막행의 x인덱스부터 끝까지이다
+        t_arr = [[0] * z for _ in range(x + 1)]  # 아니면 쌓을 수 있는데 이 때 배열은 x+1*z가 된다. (그림으로 확인해볼것)
+        t_arr[x] = arr[y - 1][x:]  # 마지막 행은 arr의 마지막행의 x인덱스부터 끝까지이다
 
         for i in range(x):
             for j in range(y):
-                t_arr[i][j] = arr[y - 1 - j][i]             # 0~x-1열, 0~y-1행 부분은 arr의 0~x-1열, 0~y-1행까지를 시계방향으로 90도 회전한 것
+                t_arr[i][j] = arr[y - 1 - j][i]  # 0~x-1열, 0~y-1행 부분은 arr의 0~x-1열, 0~y-1행까지를 시계방향으로 90도 회전한 것
 
-        x, y, z = y, x + 1, z - y                           # x,y,z를 갱신해준다.
-        arr = t_arr                                         # 배열도 갱신해준다.
+        x, y, z = y, x + 1, z - y  # x,y,z를 갱신해준다.
+        arr = t_arr  # 배열도 갱신해준다.
 
+    idx = [0] * N
+    for i in range(y):
+        for j in range(x + z):
+            if arr[i][j] != 0:
+                idx[arr[i][j] - 1] = (i, j)
+
+    return y, x + z, idx
+
+
+# 첫번째 로직으로 어항을 쌓는 함수
+# 1차원 리스트를 받아서 어항이 쌓인 상태인 2차원 배열을 반환한다.
+def change1(lst):
+    arr = [[0] * m for _ in range(n)]  # 앞에서 미리 계산한 결과를 이용하여
+    for i in range(N):
+        y, x = idx[i]                  # i번째 어항을 정해진 곳에 채워준다.
+        arr[y][x] = lst[i]
     return arr
+
 
 # 2차원 배열이 주어질 때 물고기를 분배하고 결과를 1차원으로 돌려주는 배열
 # 처음 divide와 나중 divide를 모든 이차원 배열에 대해 일반화시켰다.
 # 온도를 바꿀 때는 원본 배열을 복사하고 복사 배열의 값을 기준으로 원본 배열의 값을 바꾸었다. (각 칸에 대한 4방 탐색)
 def divide(arr):
-    n = len(arr)                                # 가로 길이
-    m = len(arr[0])                             # 세로 길이
-    tmp_arr = [row[:] for row in arr]           # 원래 온도를 저장할 배열
+    n = len(arr)  # 가로 길이
+    m = len(arr[0])  # 세로 길이
+    tmp_arr = [row[:] for row in arr]  # 원래 온도를 저장할 배열
 
     for i in range(n):
         for j in range(m):
 
-            if tmp_arr[i][j] == 0:              # 어항이 아니다.
+            if tmp_arr[i][j] == 0:  # 어항이 아니다.
                 continue
 
             for k in range(4):
                 ny = i + dy[k]
-                nx = j + dx[k]                  # 어항인 곳과만 교류가 있어야 한다.
+                nx = j + dx[k]  # 어항인 곳과만 교류가 있어야 한다.
 
                 if 0 <= ny < n and 0 <= nx < m and tmp_arr[ny][nx] > 0:
                     if tmp_arr[ny][nx] > tmp_arr[i][j]:
@@ -88,13 +108,13 @@ def divide(arr):
                     else:
                         arr[i][j] -= ((tmp_arr[i][j] - tmp_arr[ny][nx]) // 5)
 
-    t_lst = [0] * N                     # 어항을 다시 펼칠거다.
+    t_lst = [0] * N  # 어항을 다시 펼칠거다.
     k = 0
-    for j in range(m):                  # 열 번호가 작은게 우선
+    for j in range(m):  # 열 번호가 작은게 우선
         for i in range(n - 1, -1, -1):  # 행 번호가 큰게 우선
             if k == N:
                 break
-            if arr[i][j] > 0:           # 어항이면 추가해주자.
+            if arr[i][j] > 0:  # 어항이면 추가해주자.
                 t_lst[k] = arr[i][j]
                 k += 1
 
@@ -103,24 +123,28 @@ def divide(arr):
 
     return t_lst
 
+
 # 1*N배열을 4*(N//4)배열로 규칙에 맞게 바꾸는 함수이다.
 # 잘 생각해보면 아래와 같은 규칙성을 찾을 수 있다.
 def change2(lst):
     k = N // 4
     tmp_arr = [[0] * k for _ in range(4)]
-    for j in range(k):                              # j열 채우기 
-        tmp_arr[0][j] = lst[3 * k - 1 - j]          # 0행 ~ 3행까지
-        tmp_arr[1][j] = lst[k + j]                  
+    for j in range(k):  # j열 채우기
+        tmp_arr[0][j] = lst[3 * k - 1 - j]  # 0행 ~ 3행까지
+        tmp_arr[1][j] = lst[k + j]
         tmp_arr[2][j] = lst[k - 1 - j]
         tmp_arr[3][j] = lst[3 * k + j]
 
     return tmp_arr
+
 
 N, K = map(int, input().split())
 lst = list(map(int, input().split()))
 t = 0
 dy = [0, 0, 1, -1]
 dx = [1, -1, 0, 0]
+n, m, idx = make_changeset()
+
 while True:
     if check():
         break
