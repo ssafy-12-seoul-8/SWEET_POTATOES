@@ -1,123 +1,74 @@
-N, K = map(int, input().split())
-arr = [list(map(int, input().split())) for _ in range(N)]
-dy = [0, 0, 0, -1, 1]
-dx = [0, 1, -1, 0, 0]
+def myprint():
+    print("말")
+    for i in range(n + 2):
+        print(*knight[i])
 
-unit = [[[] for _ in range(N)] for _ in range(N)]
-loc = [0] * K
+    print("좌표")
+    print(*knight_loc)
+
+    print("-" * 50)
+
+
+n, K = map(int, input().split())
+
+arr = [[2] * (n + 2)] + [[2] + list(map(int, input().split())) + [2] for _ in range(n)] + [[2] * (n + 2)]
+
+knight = [[[] for _ in range(n + 2)] for _ in range(n + 2)]
+knight_loc = [0] * K
+change = [1, 0, 3, 2]
+dy = [0, 0, -1, 1]
+dx = [1, -1, 0, 0]
 for i in range(K):
     y, x, d = map(int, input().split())
-    unit[y - 1][x - 1].append([i, d])
-    loc[i] = [y - 1, x - 1, 0]
+    knight_loc[i] = [y, x, 0]
+    knight[y][x].append((i, d - 1))
 
 ans = -1
 time = 0
-flag = False
-while time <= 1000:
+flag = True
+while time < 1000:
+
     time += 1
-    for l in range(K):
-        y, x, idx = loc[l]
-        d = unit[y][x][idx][1]
+    for i in range(K):
+        y, x, z = knight_loc[i]
+        num, d = knight[y][x][z]
+
         ny = y + dy[d]
         nx = x + dx[d]
-        if 0 <= ny < N and 0 <= nx < N:
-            if arr[ny][nx] == 0:
-                t_l = len(unit[ny][nx])
-                for k in range(idx, len(unit[y][x])):
-                    num, t_d = unit[y][x][k]
-                    loc[num] = [ny, nx, t_l + k - idx]
-                    unit[ny][nx].append([num, t_d])
-                unit[y][x] = unit[y][x][:idx]
-                if len(unit[ny][nx]) >= 4:
-                    flag = True
-                    break
-            elif arr[ny][nx] == 1:
-                t_l = len(unit[ny][nx])
-                cnt = 0
-                for k in range(len(unit[y][x]) - 1, idx - 1, -1):
-                    num, t_d = unit[y][x][k]
-                    loc[num] = [ny, nx, t_l + cnt]
-                    unit[ny][nx].append([num, t_d])
-                    cnt += 1
-                unit[y][x] = unit[y][x][:idx]
-                if len(unit[ny][nx]) >= 4:
-                    flag = True
-                    break
 
-            else:
-                ny = y - dy[d]
-                nx = x - dx[d]
-                if d <= 2:
-                    d = 3 - d
-                else:
-                    d = 7 - d
-                unit[y][x][idx][1] = d
-                if not (0 <= ny < N and 0 <= nx < N) or arr[ny][nx] == 2:
-                    continue
-                elif arr[ny][nx] == 0:
-                    t_l = len(unit[ny][nx])
-                    for k in range(idx, len(unit[y][x])):
-                        num, t_d = unit[y][x][k]
-                        loc[num] = [ny, nx, t_l + k - idx]
-                        unit[ny][nx].append([num, t_d])
-                    unit[y][x] = unit[y][x][:idx]
-                    if len(unit[ny][nx]) >= 4:
-                        flag = True
-                        break
-                else:
-                    t_l = len(unit[ny][nx])
-                    cnt = 0
-                    for k in range(len(unit[y][x]) - 1, idx - 1, -1):
-                        num, t_d = unit[y][x][k]
-                        loc[num] = [ny, nx, t_l + cnt]
-                        unit[ny][nx].append([num, t_d])
-                        cnt += 1
-                    unit[y][x] = unit[y][x][:idx]
-                    if len(unit[ny][nx]) >= 4:
-                        flag = True
-                        break
-        else:
-            ny = y - dy[d]
-            nx = x - dx[d]
-            if d <= 2:
-                d = 3 - d
-            else:
-                d = 7 - d
-            unit[y][x][idx][1] = d
-
-            if not (0 <= ny < N and 0 <= nx < N) or arr[ny][nx] == 2:
+        if arr[ny][nx] == 2:
+            d = change[d]
+            ny = y + dy[d]
+            nx = x + dx[d]
+            knight[y][x][z] = [num, d]
+            if arr[ny][nx] == 2:
                 continue
-            elif arr[ny][nx] == 0:
-                t_l = len(unit[ny][nx])
-                for k in range(idx, len(unit[y][x])):
-                    num, t_d = unit[y][x][k]
-                    loc[num] = [ny, nx, t_l + k - idx]
-                    unit[ny][nx].append([num, t_d])
-                unit[y][x] = unit[y][x][:idx]
-                if len(unit[ny][nx]) >= 4:
-                    flag = True
-                    break
-            else:
-                t_l = len(unit[ny][nx])
-                cnt = 0
-                for k in range(len(unit[y][x]) - 1, idx - 1, -1):
-                    num, t_d = unit[y][x][k]
-                    loc[num] = [ny, nx, t_l + cnt]
-                    unit[ny][nx].append([num, t_d])
-                    cnt += 1
-                unit[y][x] = unit[y][x][:idx]
-                if len(unit[ny][nx]) >= 4:
-                    flag = True
-                    break
-        # for i in range(N):
-        #     print(unit[i])
-        # print("-" * 100)
-    if flag:
+
+        l = len(knight[ny][nx])
+
+        if arr[ny][nx] == 0:
+            for k in range(z, len(knight[y][x])):
+                t_num, t_d = knight[y][x][k]
+                knight_loc[t_num] = [ny, nx, l + k - z]
+                knight[ny][nx].append((t_num, t_d))
+            knight[y][x] = knight[y][x][:z]
+            if len(knight[ny][nx]) >= 4:
+                flag = False
+                break
+
+        else:
+            l2 = len(knight[y][x])
+            for k in range(l2 - 1, z - 1, -1):
+                t_num, t_d = knight[y][x][k]
+                knight_loc[t_num] = [ny, nx, l + l2 - 1 - k]
+                knight[ny][nx].append((t_num, t_d))
+            knight[y][x] = knight[y][x][:z]
+            if len(knight[ny][nx]) >= 4:
+                flag = False
+                break
+
+    if not flag:
         ans = time
         break
 
-    # for i in range(N):
-    #     print(unit[i])
-    # print("-" * 100)
-    # print(loc)
 print(ans)
