@@ -1,3 +1,5 @@
+import sys
+sys.setrecursionlimit(100000)
 def btk(enemy_cnt, flag, lst):
     global ans, t_flag
     if t_flag:
@@ -8,16 +10,20 @@ def btk(enemy_cnt, flag, lst):
         ans = lst[:]
         return
 
+    # 모독이나 써볼까
     if not flag and hp_cnt[1] > 0:
         lst.append((-1, -1))
         k = 2
+
+        # 얼만큼 퍼지는데
         while True:
             if hp_cnt[k] == 0:
                 break
             k += 1
 
+        # 아군 공격당함
         for i in range(1, N + 1):
-            hp_cnt[mine[i][1]] -= 1
+            hp_cnt[max(0, mine[i][1])] -= 1
             mine[i][1] -= k
             hp_cnt[max(0, mine[i][1])] += 1
 
@@ -26,7 +32,7 @@ def btk(enemy_cnt, flag, lst):
             hp = enemy[i][1]
             if 0 < hp <= k:
                 t_cnt += 1
-            hp_cnt[enemy[i][1]] -= 1
+            hp_cnt[max(0, enemy[i][1])] -= 1
             enemy[i][1] -= k
             hp_cnt[max(0, enemy[i][1])] += 1
 
