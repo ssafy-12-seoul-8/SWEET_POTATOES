@@ -1,62 +1,28 @@
-import sys
+# 도시의 크기 N : 1<=N<=2000 ( 1도 가능함 )
+N=int(input())
+# . : 빈칸, O : 건물, X : 건물 잔해, B : 폭탄이 설치된 칸
+arr=[list(input()) for _ in range(N)]
 
-input = sys.stdin.readline
-
-
-def check(city, possible):
-    for i in range(N):
-        start = end = 0
-        flag = True
-        while end < N:
-            if city[i][end] == ".":
-                end += 1
-            elif city[i][end] == "O":
-                for j in range(start, end + 1):
-                    possible[i][j] = 1
-                flag = False
-                start = end = end + 1
-            else:
-                possible[i][end] = 1
-                if not flag:
-                    for j in range(start, end):
-                        possible[i][j] = 1
-                flag = True
-                start = end = end + 1
-
-        if not flag:
-            for j in range(start, end):
-                possible[i][j] = 1
-
-
-N = int(input())
-city = [list(input().rstrip()) for _ in range(N)]
-possible = [[0] * N for _ in range(N)]
-check(city, possible)
-
-t_city = [[0] * N for _ in range(N)]
-
-t_possible = [[0] * N for _ in range(N)]
+v=[[0]*N for _ in range(N)]
 
 for i in range(N):
     for j in range(N):
-        t_city[i][j] = city[j][i]
-        t_possible[i][j] = possible[j][i]
+        if arr[i][j] == "O":
+            for di, dj in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+                for mul in range(1, N):
+                    ni, nj = i + di * mul, j + dj * mul
+                    if not (0 <= ni < N and 0 <= nj < N): break  # 범위 밖이면 멈추고
+                    if arr[ni][nj] != ".":    # 잔해가 있으면 괜찮고
+                        break
+                    v[ni][nj]=1
 
-check(t_city, t_possible)
 for i in range(N):
     for j in range(N):
-        city[i][j] = t_city[j][i]
-        possible[i][j] = t_possible[j][i]
+        if arr[i][j]=="." and v[i][j]==0:
+            arr[i][j]="B"
 
-ans = [[0] * N for _ in range(N)]
-for i in range(N):
-    for j in range(N):
-        if city[i][j] != ".":
-            ans[i][j] = city[i][j]
-        elif possible[i][j]==0:
-            ans[i][j]="B"
-        else:
-            ans[i][j]="."
+for row in arr:
+    print(*row,sep="")
 
-for i in range(N):
-    print(*ans[i], sep="")
+# 쓸데없는 폭탄 있어도 되능가..?
+# 절대 있으면 안 되는 곳만 빼고 다 넣자
