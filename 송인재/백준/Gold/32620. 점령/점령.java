@@ -46,8 +46,12 @@ public class Main {
             int[] current = pq.poll();
             int currentNode = current[0];
             int energy = current[1];
+            
+            if (max < energy) {
+                break;
+            }
 
-            if (visited[currentNode] || max < energy) {
+            if (visited[currentNode]) {
                 continue;
             }
 
@@ -59,6 +63,10 @@ public class Main {
             }
 
             for (int next : graph.get(currentNode)) {
+                if (visited[next]) {
+                    continue;
+                }
+                
                 pq.add(new int[] { next, a[next] });
             }
         }
