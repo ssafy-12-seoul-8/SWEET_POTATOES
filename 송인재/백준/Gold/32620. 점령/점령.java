@@ -42,21 +42,18 @@ public class Main {
 
         pq.add(new int[] { r, a[r] });
 
+        visited[r] = true;
+
         while (!pq.isEmpty()) {
             int[] current = pq.poll();
             int currentNode = current[0];
             int energy = current[1];
-            
+
             if (max < energy) {
                 break;
             }
 
-            if (visited[currentNode]) {
-                continue;
-            }
-
             max += b[currentNode];
-            visited[currentNode] = true;
 
             if (!graph.containsKey(currentNode)) {
                 continue;
@@ -66,7 +63,8 @@ public class Main {
                 if (visited[next]) {
                     continue;
                 }
-                
+
+                visited[next] = true;
                 pq.add(new int[] { next, a[next] });
             }
         }
