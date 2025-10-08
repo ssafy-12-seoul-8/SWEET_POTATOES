@@ -3,7 +3,7 @@ import java.util.*;
 class Solution {
     List<Integer> leaves;
     Map<Integer, List<Integer>> graph;
-    Map<Integer, int[]> nextChild;
+    Map<Integer, Integer> nextChild;
     Map<Integer, List<Integer>> orders;
     int totalRequired;
     
@@ -24,16 +24,17 @@ class Solution {
             int from = edge[0];
             int to = edge[1];
 
-            graph.putIfAbsent(from, new ArrayList<>());
+            if (!graph.containsKey(from)) {
+                graph.put(from, new ArrayList<>());
+                nextChild.put(from, 0);
+            }
+            
             graph.get(from)
                 .add(to);
         }
                 
         for (Integer node : graph.keySet()) {
-            List<Integer> children = graph.get(node);
-            
-            Collections.sort(children);
-            nextChild.put(node, new int[] { 0, children.get(0) });
+            Collections.sort(graph.get(node));
         }
         
         for (int i = 1; i <= target.length; i++) {
@@ -46,25 +47,21 @@ class Solution {
         
         int order = 0;
         
-        while (!allPossible(target) && totalRequired != -1) {
+        while (!allPossible(target)) {
+            if (totalRequired == -1) {
+                return new int[] { -1 };
+            }
+            
             dfs(1, order++);
         }
         
-        if (totalRequired == -1) {
-            return new int[] { -1 };
-        }
-        
         int[] result = new int[totalRequired];
-        
-        // System.out.println(orders);
         
         for (int key : orders.keySet()) {
             int value = target[key];
             List<Integer> curr = orders.get(key);
             int count = curr.size();
             int index = 0;
-            
-            // System.out.println("for: " + key + " / value: " + value + " / index: " + curr + " / count: " + count);
 
             while (index < count) {
                 index++;
@@ -78,8 +75,6 @@ class Solution {
                 } else {
                     num = 3;
                 }
-                
-                // System.out.println("this index: " + curr.get(index - 1) + " / num: " + num);
                 
                 result[curr.get(index - 1)] = num;
                 value -= num;
@@ -122,14 +117,14 @@ class Solution {
             return;
         }
         
-        int[] next = nextChild.get(parent);
+        int nextIndex = nextChild.get(parent);
+        int next = graph.get(parent)
+            .get(nextIndex);
         
-        dfs(next[1], order);
+        dfs(next, order);
         
-        if (next[0] == graph.get(parent).size() - 1) {
-            nextChild.put(parent, new int[] { 0, graph.get(parent).get(0) });
-        } else {
-            nextChild.put(parent, new int[] { next[0] + 1, graph.get(parent).get(next[0] + 1) });
-        }
+        int nextSwitched = nextIndex == graph.get(parent).size() - 1 ? 0 : nextIndex + 1;
+        
+        nextChild.put(parent, nextSwitched);
     }
 }

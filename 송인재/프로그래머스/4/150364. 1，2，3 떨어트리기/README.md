@@ -1,10 +1,10 @@
 # [level 4] 1,2,3 떨어트리기 - 150364 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/150364) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/150364#) 
 
 ### 성능 요약
 
-메모리: 94 MB, 시간: 10.77 ms
+메모리: 86.6 MB, 시간: 2.34 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2025년 10월 08일 18:25:53
+2025년 10월 08일 18:34:25
 
 ### 문제 설명
 
