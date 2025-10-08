@@ -1,7 +1,6 @@
 import java.util.*;
 
 class Solution {
-    List<Integer> leaves;
     Map<Integer, List<Integer>> graph;
     Map<Integer, Integer> nextChild;
     Map<Integer, List<Integer>> orders;
@@ -9,16 +8,9 @@ class Solution {
     
     public int[] solution(int[][] edges, int[] target) {
         graph = new HashMap<>();
-        leaves = new ArrayList<>();
         nextChild = new HashMap<>();
         orders = new HashMap<>();
         totalRequired = 0;
-        
-        for (int i = 0; i < target.length; i++) {
-            if (target[i] != 0) {
-                leaves.add(i);
-            }
-        }
         
         for (int[] edge : edges) {
             int from = edge[0];
@@ -87,9 +79,9 @@ class Solution {
     boolean allPossible(int[] target) {
         int total = 0;
         
-        for (int i = 0; i < leaves.size(); i++) {
-            int current = orders.get(leaves.get(i)).size();
-            int num = target[leaves.get(i)];
+        for (int node : orders.keySet()) {
+            int current = orders.get(node).size();
+            int num = target[node];
             
             if (current > num) {
                 totalRequired = -1;
