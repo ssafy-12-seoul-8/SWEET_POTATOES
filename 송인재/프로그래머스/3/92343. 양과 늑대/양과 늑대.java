@@ -4,14 +4,14 @@ class Solution {
     
     int[] info;
     Map<Integer, List<Integer>> graph;
-    Map<String, Boolean> bits;
+    boolean[] states;
     int max;
     int totalLambs;
     
     public int solution(int[] info, int[][] edges) {
         this.info = info;
         graph = new HashMap<>();
-        bits = new HashMap<>();
+        states = new boolean[1 << info.length];
         max = 0;
         totalLambs = 0;
         
@@ -30,15 +30,12 @@ class Solution {
                 .add(to);
         }
         
-        boolean[] visited = new boolean[info.length];
-        visited[0] = true;
-        
-        combination(0, new boolean[info.length], 1, 0, visited);
+        combination(0, new boolean[info.length], 1, 0, 1);
         
         return max;
     }
     
-    void combination(int current, boolean[] possibles, int lambs, int wolves, boolean[] visited) {
+    void combination(int current, boolean[] possibles, int lambs, int wolves, int state) {
         if (max == totalLambs) {
             return;
         }
@@ -56,19 +53,13 @@ class Solution {
                 continue;
             }
             
-            visited[i] = true;
-            String bitKey = Arrays.toString(visited);
+            int newState = state | 1 << i;
             
-            bits.putIfAbsent(bitKey, false);
-            
-            if (bits.get(bitKey)) {
-                visited[i] = false;
-                
+            if (states[newState]) {
                 continue;
             }
             
-            bits.put(bitKey, true);
-            
+            states[newState] = true;
             int nextLambs = lambs;
             int nextWolves = wolves;
             
@@ -79,17 +70,13 @@ class Solution {
             }
             
             if (nextLambs <= nextWolves) {
-                visited[i] = false;
-                
                 continue;
             }
             
             boolean[] nextPossibles = Arrays.copyOf(possibles, possibles.length);
             nextPossibles[i] = false;
             
-            combination(i, nextPossibles, nextLambs, nextWolves, visited);
-            
-            visited[i] = false;
+            combination(i, nextPossibles, nextLambs, nextWolves, newState);
         }
     }
 }
