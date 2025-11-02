@@ -36,6 +36,10 @@ public class Main {
   }
 
   static void combination(int row, int col, int current) {
+    if (max == 26) {
+      return;
+    }
+
     for (int i = 0; i < 4; i++) {
       int newRow = row + dr[i];
       int newCol = col + dc[i];
