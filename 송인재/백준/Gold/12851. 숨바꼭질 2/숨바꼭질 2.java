@@ -10,7 +10,7 @@ public class Main {
     int k = Integer.parseInt(st.nextToken());
     int[] distances = new int[100_001];
     int maxPossible = Math.abs(k - n);
-    Queue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
+    Queue<int[]> pq = new LinkedList<>();
     int count = 0;
 
     Arrays.fill(distances, maxPossible);
