@@ -12,7 +12,6 @@ public class Main {
     int maxPossible = Math.abs(k - n);
     Queue<int[]> pq = new LinkedList<>();
     int count = 0;
-    int minDistance = maxPossible;
 
     Arrays.fill(distances, maxPossible);
     pq.add(new int[] { n, 0 });
@@ -28,7 +27,7 @@ public class Main {
       int at = current[0];
       int weight = current[1];
 
-      if (weight > minDistance) {
+      if (weight > maxPossible) {
         break;
       }
 
@@ -36,15 +35,14 @@ public class Main {
         int nextAt = i == 0 ? at * 2 : at + i;
         int nextWeight = weight + 1;
 
-        if (nextWeight > maxPossible || isOutOfBox(nextAt) || distances[nextAt] < nextWeight) {
+        if (isOutOfBox(nextAt) || distances[nextAt] < nextWeight) {
           continue;
         }
 
         if (nextAt == k) {
           count++;
-
           distances[nextAt] = nextWeight;
-          minDistance = nextWeight;
+          maxPossible = nextWeight;
 
           continue;
         }
