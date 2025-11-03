@@ -13,16 +13,12 @@ public class Main {
     }
   }
 
-  static Map<Integer, List<Edge>> graph;
-  static int[][] dist;
-  static int n;
-
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    n = Integer.parseInt(br.readLine());
+    int n = Integer.parseInt(br.readLine());
     int m = Integer.parseInt(br.readLine());
-    graph = new HashMap<>();
-    dist = new int[n + 1][n + 1];
+    Map<Integer, List<Edge>> graph = new HashMap<>();
+    int[][] distances = new int[n + 1][n + 1];
 
     for (int i = 0; i < m; i++) {
       StringTokenizer st = new StringTokenizer(br.readLine());
@@ -36,14 +32,39 @@ public class Main {
     }
 
     for (int i = 1; i <= n; i++) {
-      dijkstra(i);
+      Arrays.fill(distances[i], 10_000_001);
+      distances[i][i] = 0;
+    }
+
+    for (int i = 1; i <= n; i++) {
+      if (!graph.containsKey(i)) {
+        continue;
+      }
+
+      for (Edge next : graph.get(i)) {
+        if (distances[i][next.to] > next.weight) {
+          distances[i][next.to] = next.weight;
+        }
+      }
+    }
+
+    for (int i = 1; i <= n; i++) {
+      for (int j = 1; j <= n; j++) {
+        for (int k = 1; k <= n; k++) {
+          distances[j][k] = Math.min(distances[j][k], distances[j][i] + distances[i][k]);
+        }
+      }
     }
 
     StringBuilder sb = new StringBuilder();
 
     for (int i = 1; i <= n; i++) {
       for (int j = 1; j <= n; j++) {
-        sb.append(dist[i][j] == 10_000_001 ? 0 : dist[i][j])
+        if (distances[i][j] == 10_000_001) {
+          distances[i][j] = 0;
+        }
+
+        sb.append(distances[i][j])
             .append(" ");
       }
 
@@ -51,38 +72,6 @@ public class Main {
     }
 
     System.out.print(sb);
-  }
-
-  static void dijkstra(int start) {
-    int[] distances = new int[n + 1];
-    Queue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
-
-    Arrays.fill(distances, 10_000_001);
-
-    pq.add(new int[] { start, 0 });
-
-    while (!pq.isEmpty()) {
-      int[] current = pq.poll();
-      int from = current[0];
-      int distance = current[1];
-
-      if (!graph.containsKey(from)) {
-        continue;
-      }
-
-      for (Edge next : graph.get(from)) {
-        int nextDistance = distance + next.weight;
-
-        if (distances[next.to] <= nextDistance || next.to == start) {
-          continue;
-        }
-
-        distances[next.to] = nextDistance;
-        pq.add(new int[] { next.to, nextDistance });
-      }
-    }
-
-    dist[start] = distances;
   }
 
 }
