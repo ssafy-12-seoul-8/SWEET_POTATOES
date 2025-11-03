@@ -38,16 +38,15 @@ public class Main {
         if (isOutOfBox(nextAt) || distances[nextAt] < nextWeight) {
           continue;
         }
+        
+        distances[nextAt] = nextWeight;
 
         if (nextAt == k) {
           count++;
-          distances[nextAt] = nextWeight;
           maxPossible = nextWeight;
 
           continue;
         }
-
-        distances[nextAt] = nextWeight;
 
         pq.add(new int[] { nextAt, nextWeight });
       }
