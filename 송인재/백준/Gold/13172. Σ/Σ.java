@@ -31,10 +31,12 @@ public class Main {
 
     while (exp > 0) {
       if ((exp & 1) == 1) {
-        inverse = inverse * base % P;
+        inverse *= base;
+        inverse %= P;
       }
 
-      base = base * base % P;
+      base *= base;
+      base %= P;
       exp >>= 1;
     }
 
