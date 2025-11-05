@@ -15,7 +15,6 @@ public class Main {
 
   static int n;
   static int max;
-  static Map<Integer, List<Edge>> graph;
   static Queue<int[]> pq;
 
   public static void main(String[] args) throws IOException {
@@ -24,7 +23,8 @@ public class Main {
     n = Integer.parseInt(st.nextToken());
     int m = Integer.parseInt(st.nextToken());
     int x = Integer.parseInt(st.nextToken());
-    graph = new HashMap<>();
+    Map<Integer, List<Edge>> graph = new HashMap<>();
+    Map<Integer, List<Edge>> inverse = new HashMap<>();
     pq = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
     max = 0;
 
@@ -37,24 +37,23 @@ public class Main {
       graph.putIfAbsent(from, new ArrayList<>());
       graph.get(from)
           .add(new Edge(to, weight));
+      inverse.putIfAbsent(to, new ArrayList<>());
+      inverse.get(to)
+          .add(new Edge(from, weight));
     }
 
-    int[] fromX = dijkstra(x);
+    int[] fromX = dijkstra(x, graph);
+    int[] toX = dijkstra(x, inverse);
     int max = 0;
 
     for (int i = 1; i <= n; i++) {
-      if (i == x) {
-        continue;
-      }
-
-      int[] fromI = dijkstra(i);
-      max = Math.max(max, fromI[x] + fromX[i]);
+      max = Math.max(max, fromX[i] + toX[i]);
     }
-
+    
     System.out.println(max);
   }
 
-  static int[] dijkstra(int start) {
+  static int[] dijkstra(int start, Map<Integer, List<Edge>> graph) {
     int[] distances = new int[n + 1];
 
     Arrays.fill(distances, 100_000);
