@@ -15,14 +15,13 @@ public class Main {
 
   static int n;
   static Map<Integer, List<Edge>> graph;
-  static Queue<int[]> pq;
-  static int INF = 100_000 * 10_000;
+  static int max;
 
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     n = Integer.parseInt(br.readLine());
     graph = new HashMap<>();
-    pq = new PriorityQueue<>((o1, o2) -> o2[1] - o1[1]);
+    max = 0;
 
     for (int i = 0; i < n; i++) {
       StringTokenizer st = new StringTokenizer(br.readLine());
@@ -43,57 +42,39 @@ public class Main {
       }
     }
 
-    int[] first = dijkstra(1);
-    int[] second = dijkstra(first[1]);
+    dfs(1, 0);
 
-    System.out.println(second[0]);
+    System.out.println(max);
   }
 
-  static int[] dijkstra(int start) {
-    int[] dist = new int[n + 1];
+  static int dfs(int current, int parent) {
+    if (!graph.containsKey(current)) {
+      return 0;
+    }
 
-    Arrays.fill(dist, INF);
-    pq.add(new int[] { start, 0 });
+    int firstMax = 0;
+    int secondMax = 0;
 
-    dist[start] = 0;
-
-    while (!pq.isEmpty()) {
-      int[] current = pq.poll();
-      int from = current[0];
-      int weight = current[1];
-
-      if (weight > dist[from] || !graph.containsKey(from)) {
+    for (Edge edge : graph.get(current)) {
+      if (edge.to == parent) {
         continue;
       }
 
-      for (Edge edge : graph.get(from)) {
-        int nextWeight = weight + edge.weight;
+      int subMax = dfs(edge.to, current) + edge.weight;
 
-        if (dist[edge.to] <= nextWeight) {
-          continue;
-        }
+      if (subMax > firstMax) {
+        secondMax = firstMax;
+        firstMax = subMax;
 
-        dist[edge.to] = nextWeight;
-
-        pq.add(new int[] { edge.to, nextWeight });
-      }
-    }
-
-    int max = 0;
-    int maxIndex = 0;
-
-    for (int i = 1; i <= n; i++) {
-      if (i == start) {
         continue;
       }
 
-      if (max < dist[i]) {
-        max = dist[i];
-        maxIndex = i;
-      }
+      secondMax = Math.max(secondMax, subMax);
     }
 
-    return new int[] { max, maxIndex };
+    max = Math.max(max, firstMax + secondMax);
+
+    return firstMax;
   }
 
 }
