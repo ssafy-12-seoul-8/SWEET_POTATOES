@@ -24,8 +24,8 @@ public class Main {
     int m = Integer.parseInt(st.nextToken());
     List<Edge> edges = new ArrayList<>();
     rep = new int[n + 1];
-    int max = 0;
     int sum = 0;
+    int count = 0;
 
     for (int i = 0; i < m; i++) {
       st = new StringTokenizer(br.readLine());
@@ -43,15 +43,19 @@ public class Main {
     edges.sort(Comparator.comparingInt(e -> e.weight));
 
     for (int i = 0; i < m; i++) {
+      if (count == n - 2) {
+        break;
+      }
+      
       Edge edge = edges.get(i);
 
       if (union(edge.from, edge.to)) {
         sum += edge.weight;
-        max = Math.max(max, edge.weight);
+        count++;
       }
     }
 
-    System.out.println(sum - max);
+    System.out.println(sum);
   }
 
   static int find(int x) {
