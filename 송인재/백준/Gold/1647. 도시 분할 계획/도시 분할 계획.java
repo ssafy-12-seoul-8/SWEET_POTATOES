@@ -6,12 +6,10 @@ public class Main {
   static class Edge {
     int from;
     int to;
-    int weight;
 
-    Edge(int from, int to, int weight) {
+    Edge(int from, int to) {
       this.from = from;
       this.to = to;
-      this.weight = weight;
     }
   }
 
@@ -22,7 +20,8 @@ public class Main {
     StringTokenizer st = new StringTokenizer(br.readLine());
     int n = Integer.parseInt(st.nextToken());
     int m = Integer.parseInt(st.nextToken());
-    List<Edge> edges = new ArrayList<>();
+    Map<Integer, List<Edge>> weights = new HashMap<>();
+    int maxWeight = 0;
     rep = new int[n + 1];
     int sum = 0;
     int count = 0;
@@ -32,26 +31,31 @@ public class Main {
       int from = Integer.parseInt(st.nextToken());
       int to = Integer.parseInt(st.nextToken());
       int weight = Integer.parseInt(st.nextToken());
+      maxWeight = Math.max(maxWeight, weight);
 
-      edges.add(new Edge(from, to, weight));
+      weights.putIfAbsent(weight, new ArrayList<>());
+      weights.get(weight)
+          .add(new Edge(from, to));
     }
 
     for (int i = 1; i <= n; i++) {
       rep[i] = i;
     }
 
-    edges.sort(Comparator.comparingInt(e -> e.weight));
-
-    for (int i = 0; i < m; i++) {
-      if (count == n - 2) {
-        break;
+    for(int i = 1; i <= maxWeight; i++) {
+      if (count == n - 2 || !weights.containsKey(i)) {
+        continue;
       }
-      
-      Edge edge = edges.get(i);
 
-      if (union(edge.from, edge.to)) {
-        sum += edge.weight;
-        count++;
+      for (Edge edge : weights.get(i)) {
+        if (count == n - 2) {
+          break;
+        }
+
+        if (union(edge.from, edge.to)) {
+          sum += i;
+          count++;
+        }
       }
     }
 
