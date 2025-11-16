@@ -6,6 +6,10 @@ public class Main {
   static int[][] board = new int[9][9];
   static int[][] answer;
   static int[] blanks;
+  static int[] rows = new int[9];
+  static int[] cols = new int[9];
+  static int[] boxes = new int[9];
+  static int DIGIT_FILTER = (1 << 10) - 2;
 
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -19,6 +23,13 @@ public class Main {
 
         if (board[i][j] == 0) {
           blankCount++;
+        } else {
+          int bit = 1 << board[i][j];
+
+          rows[i] |= bit;
+          cols[j] |= bit;
+          int boxIndex = i / 3 * 3 + j / 3;
+          boxes[boxIndex] |= bit;
         }
       }
     }
@@ -34,7 +45,7 @@ public class Main {
       }
     }
 
-    backtrack(0, blankCount);
+    backtrack(0);
 
     StringBuilder sb = new StringBuilder();
 
@@ -49,12 +60,12 @@ public class Main {
     System.out.print(sb);
   }
 
-  static void backtrack(int index, int left) {
+  static void backtrack(int index) {
     if (Objects.nonNull(answer)) {
       return;
     }
 
-    if (left == 0) {
+    if (index == blanks.length) {
       answer = new int[9][9];
 
       for (int i = 0; i < 9; i++) {
@@ -67,53 +78,25 @@ public class Main {
     int blankIndex = blanks[index];
     int row = blankIndex / 9;
     int col = blankIndex % 9;
+    int boxIndex = row / 3 * 3 + col / 3;
+    int notUsed = ~(rows[row] | cols[col] | boxes[boxIndex]) & DIGIT_FILTER;
 
-    for (int i = 1; i <= 9; i++) {
-      if (!checkRow(row, col, i) || !checkCol(row, col, i) || !checkBox(row, col, i)) {
-        continue;
-      }
+    for (int i = notUsed; i != 0; i &= (i - 1)) {
+      int nextBit = i & -i;
+      int num = Integer.numberOfTrailingZeros(nextBit);
 
-      board[row][col] = i;
+      board[row][col] = num;
+      rows[row] |= nextBit;
+      cols[col] |= nextBit;
+      boxes[boxIndex] |= nextBit;
 
-      backtrack(index + 1, left - 1);
+      backtrack(index + 1);
 
       board[row][col] = 0;
+      rows[row] ^= nextBit;
+      cols[col] ^= nextBit;
+      boxes[boxIndex] ^= nextBit;
     }
-  }
-
-  static boolean checkRow(int row, int col, int num) {
-    for (int i = 0; i < 9; i++) {
-      if (col != i && board[row][i] == num) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  static boolean checkCol(int row, int col, int num) {
-    for (int i = 0; i < 9; i++) {
-      if (row != i && board[i][col] == num) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  static boolean checkBox(int row, int col, int num) {
-    int rowStart = (row / 3) * 3;
-    int colStart = (col / 3) * 3;
-
-    for (int i = rowStart; i < rowStart + 3; i++) {
-      for (int j = colStart; j < colStart + 3; j++) {
-        if (row != i && col != j && board[i][j] == num) {
-          return false;
-        }
-      }
-    }
-
-    return true;
   }
 
 }
