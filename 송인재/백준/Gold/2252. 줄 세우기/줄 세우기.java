@@ -3,18 +3,15 @@ import java.util.*;
 
 public class Main {
 
-  static Map<Integer, List<Integer>> graph;
-  static boolean[] visited;
-  static Deque<Integer> stack;
-
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     StringTokenizer st = new StringTokenizer(br.readLine());
     int n = Integer.parseInt(st.nextToken());
     int m = Integer.parseInt(st.nextToken());
-    graph = new HashMap<>();
-    visited = new boolean[n + 1];
-    stack = new ArrayDeque<>();
+    Map<Integer, List<Integer>> graph = new HashMap<>();
+    int[] ingress = new int[n + 1];
+    Queue<Integer> queue = new LinkedList<>();
+    StringBuilder sb = new StringBuilder();
 
     for (int i = 0; i < m; i++) {
       st = new StringTokenizer(br.readLine());
@@ -24,38 +21,34 @@ public class Main {
       graph.putIfAbsent(front, new ArrayList<>());
       graph.get(front)
           .add(back);
+
+      ingress[back]++;
     }
 
     for (int i = 1; i <= n; i++) {
-      if (!visited[i]) {
-        dfs(i);
+      if (ingress[i] == 0) {
+        queue.add(i);
       }
     }
 
-    StringBuilder sb = new StringBuilder();
+    while (!queue.isEmpty()) {
+      int current = queue.poll();
 
-    while (!stack.isEmpty()) {
-      sb.append(stack.pop())
+      sb.append(current)
           .append(" ");
+
+      if (!graph.containsKey(current)) {
+        continue;
+      }
+
+      for (int child : graph.get(current)) {
+        if (--ingress[child] == 0) {
+          queue.add(child);
+        }
+      }
     }
 
     System.out.println(sb);
-  }
-
-  static void dfs(int current) {
-    visited[current] = true;
-
-    if (graph.containsKey(current)) {
-      for (int next : graph.get(current)) {
-        if (visited[next]) {
-          continue;
-        }
-
-        dfs(next);
-      }
-    }
-
-    stack.push(current);
   }
 
 }
