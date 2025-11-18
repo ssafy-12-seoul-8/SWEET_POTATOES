@@ -82,6 +82,10 @@ public class Main {
     int notUsed = ~(rows[row] | cols[col] | boxes[boxIndex]) & DIGIT_FILTER;
 
     for (int i = notUsed; i != 0; i &= (i - 1)) {
+      if (Objects.nonNull(answer)) {
+        return;
+      }
+
       int nextBit = i & -i;
       int num = Integer.numberOfTrailingZeros(nextBit);
 

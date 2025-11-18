@@ -4,7 +4,7 @@
 
 ### 성능 요약
 
-메모리: 16168 KB, 시간: 208 ms
+메모리: 16264 KB, 시간: 200 ms
 
 ### 분류
 
@@ -12,13 +12,13 @@
 
 ### 제출 일자
 
-2025년 11월 16일 19:11:54
+2025년 11월 18일 13:50:15
 
 ### 문제 설명
 
 <p>Sudoku is a very simple task. A square table with 9 rows and 9 columns is divided to 9 smaller squares 3x3 as shown on the Figure. In some of the cells are written decimal digits from 1 to 9. The other cells are empty. The goal is to fill the empty cells with decimal digits from 1 to 9, one digit per cell, in such way that in each row, in each column and in each marked 3x3 subsquare, all the digits from 1 to 9 to appear. Write a program to solve a given Sudoku-task. </p>
 
-<p><img alt="" src="https://www.acmicpc.net/upload/images/sdk(2).png" style="height:233px; width:245px"></p>
+<p><img alt="" src="" style="height:233px; width:245px"></p>
 
 ### 입력 
 
