@@ -9,8 +9,6 @@ public class Main {
   static int n;
   static int m;
   static char[][] map;
-  static boolean[][] visited;
-  static Queue<int[]> queue;
 
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -19,8 +17,6 @@ public class Main {
     m = Integer.parseInt(st.nextToken());
     map = new char[n][m];
     rep = new int[n * m];
-    visited = new boolean[n][m];
-    queue = new LinkedList<>();
 
     for (int i = 0; i < n; i++) {
       map[i] = br.readLine()
@@ -33,52 +29,25 @@ public class Main {
 
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < m; j++) {
-        if (!visited[i][j]) {
-          bfs(i, j);
-        }
+        int currIndex = i * m + j;
+        int direction = convertDirection(map[i][j]);
+        int nextRow = i + dr[direction];
+        int nextCol = j + dc[direction];
+        int nextIndex = nextRow * m + nextCol;
+
+        union(nextIndex, currIndex);
       }
     }
 
     int count = 0;
 
     for (int i = 0; i < rep.length; i++) {
-      if (i == find(i)) {
+      if (rep[i] == i) {
         count++;
       }
     }
 
     System.out.println(count);
-  }
-
-  static void bfs(int i, int j) {
-    queue.add(new int[] { i, j });
-    visited[i][j] = true;
-
-    while (!queue.isEmpty()) {
-      int[] curr = queue.poll();
-      int row = curr[0];
-      int col = curr[1];
-      int currIndex = row * m + col;
-      int direction = convertDirection(map[row][col]);
-      int nextRow = row + dr[direction];
-      int nextCol = col + dc[direction];
-
-      if (isOutOfBox(nextRow, nextCol)) {
-        continue;
-      }
-
-      int nextIndex = nextRow * m + nextCol;
-
-      union(nextIndex, currIndex);
-
-      if (visited[nextRow][nextCol]) {
-        continue;
-      }
-
-      visited[nextRow][nextCol] = true;
-
-      queue.add(new int[] { nextRow, nextCol });
-    }
   }
 
   static int convertDirection(char direction) {
@@ -89,10 +58,6 @@ public class Main {
     }
 
     return 3;
-  }
-
-  static boolean isOutOfBox(int row, int col) {
-    return row < 0 || col < 0 || row >= n || col >= m;
   }
 
   static int find(int x) {
