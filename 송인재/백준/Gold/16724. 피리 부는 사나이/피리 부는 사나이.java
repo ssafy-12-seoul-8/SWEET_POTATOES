@@ -5,10 +5,11 @@ public class Main {
 
   static int[] dr = { -1, 1, 0, 0 };
   static int[] dc = { 0, 0, -1, 1 };
-  static int[] rep;
   static int n;
   static int m;
   static char[][] map;
+  static int[][] state;
+  static int count = 0;
 
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -16,38 +17,40 @@ public class Main {
     n = Integer.parseInt(st.nextToken());
     m = Integer.parseInt(st.nextToken());
     map = new char[n][m];
-    rep = new int[n * m];
+    state = new int[n][m];
 
     for (int i = 0; i < n; i++) {
       map[i] = br.readLine()
           .toCharArray();
     }
 
-    for (int i = 0; i < rep.length; i++) {
-      rep[i] = i;
-    }
-
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < m; j++) {
-        int currIndex = i * m + j;
-        int direction = convertDirection(map[i][j]);
-        int nextRow = i + dr[direction];
-        int nextCol = j + dc[direction];
-        int nextIndex = nextRow * m + nextCol;
-
-        union(nextIndex, currIndex);
-      }
-    }
-
-    int count = 0;
-
-    for (int i = 0; i < rep.length; i++) {
-      if (rep[i] == i) {
-        count++;
+        if (state[i][j] == 0) {
+          dfs(i, j);
+        }
       }
     }
 
     System.out.println(count);
+  }
+
+  static void dfs(int row, int col) {
+    state[row][col] = 1;
+
+    int direction = convertDirection(map[row][col]);
+    int nextRow = row + dr[direction];
+    int nextCol = col + dc[direction];
+
+    if (state[nextRow][nextCol] == 1) {
+      count++;
+    }
+
+    if (state[nextRow][nextCol] == 0) {
+      dfs(nextRow, nextCol);
+    }
+
+    state[row][col] = 2;
   }
 
   static int convertDirection(char direction) {
@@ -58,25 +61,6 @@ public class Main {
     }
 
     return 3;
-  }
-
-  static int find(int x) {
-    if (rep[x] != x) {
-      rep[x] = find(rep[x]);
-    }
-
-    return rep[x];
-  }
-
-  static void union(int x, int y) {
-    int repX = find(x);
-    int repY = find(y);
-
-    if (repX == repY) {
-      return;
-    }
-
-    rep[repY] = repX;
   }
 
 }
