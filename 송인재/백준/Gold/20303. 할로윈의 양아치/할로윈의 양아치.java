@@ -38,7 +38,7 @@ public class Main {
           .add(i);
     }
 
-    int[][] dp = new int[friends.size() + 1][k];
+    int[] dp = new int[k];
     int[][] groups = new int[friends.size() + 1][2];
     int groupIndex = 1;
 
@@ -56,19 +56,16 @@ public class Main {
       groupIndex++;
     }
 
-    for (int i = 1; i < dp.length; i++) {
-      int[] group = groups[i];
+    for (int[] group : groups) {
+      int kid = group[0];
+      int candy = group[1];
 
-      for (int j = 1; j < k; j++) {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-
-        if (j >= group[0]) {
-          dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - group[0]] + group[1]);
-        }
+      for (int i = k - 1; i >= kid; i--) {
+        dp[i] = Math.max(dp[i], dp[i - kid] + candy);
       }
     }
 
-    System.out.println(dp[dp.length - 1][k - 1]);
+    System.out.println(dp[k - 1]);
   }
 
   static int find(int x) {
