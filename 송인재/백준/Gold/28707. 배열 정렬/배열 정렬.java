@@ -50,6 +50,10 @@ public class Main {
     while (!pq.isEmpty()) {
       State current = pq.poll();
 
+      if (dist.get(current.state) < current.cost) {
+        continue;
+      }
+
       for (int i = 0; i < m; i++) {
         int[] swapOrder = swaps[i];
         String nextState = swap(current.state, swapOrder[0], swapOrder[1]);
