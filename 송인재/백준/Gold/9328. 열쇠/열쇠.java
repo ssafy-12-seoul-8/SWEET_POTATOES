@@ -3,23 +3,13 @@ import java.util.*;
 
 public class Main {
 
-  static class Position {
-    int row;
-    int col;
-
-    Position(int row, int col) {
-      this.row = row;
-      this.col = col;
-    }
-  }
-
   static int[] dr = { -1, 1, 0, 0 };
   static int[] dc = { 0, 0, -1, 1 };
   static char[][] map;
   static boolean[][] visited;
-  static Set<Character> keys;
-  static Map<Character, List<Position>> gates;
-  static List<Position> entries;
+  static boolean[] hasKey;
+  static Map<Integer, Queue<int[]>> gates;
+  static Queue<int[]> queue;
   static int docCount;
 
   public static void main(String[] args) throws IOException {
@@ -30,25 +20,30 @@ public class Main {
       StringTokenizer st = new StringTokenizer(br.readLine());
       int n = Integer.parseInt(st.nextToken());
       int m = Integer.parseInt(st.nextToken());
-      map = new char[n][m];
-      visited = new boolean[n][m];
-      keys = new HashSet<>();
+      map = new char[n + 2][m + 2];
+      visited = new boolean[n + 2][m + 2];
+      hasKey = new boolean[26];
       gates = new HashMap<>();
-      entries = new ArrayList<>();
+      queue = new LinkedList<>();
       docCount = 0;
 
-      for (int i = 0; i < n; i++) {
-        map[i] = br.readLine()
-            .toCharArray();
-
-        if (i == 0 || i == n - 1) {
-          for (int j = 1; j < m - 1; j++) {
-            handleEntry(i, j);
+      for (int i = 0; i <= n + 1; i++) {
+        if (i == 0 || i == n + 1) {
+          for (int j = 0; j <= m + 1; j++) {
+            map[i][j] = '.';
           }
+
+          continue;
         }
 
-        handleEntry(i, 0);
-        handleEntry(i, m - 1);
+        map[i][0] = '.';
+        map[i][m + 1] = '.';
+        char[] input = br.readLine()
+            .toCharArray();
+
+        for (int j = 1; j <= m; j++) {
+          map[i][j] = input[j - 1];
+        }
       }
 
       char[] starters = br.readLine()
@@ -56,96 +51,77 @@ public class Main {
 
       if (starters[0] != '0') {
         for (char starter : starters) {
-          keys.add(starter);
+          int keyIndex = starter - 'a';
+          hasKey[keyIndex] = true;
         }
       }
 
-      for (Position entry : entries) {
-        bfs(entry);
-      }
+      visited[0][0] = true;
 
-      while (hasGate()) {
-        ArrayList<Character> gateCodes = new ArrayList<>(gates.keySet());
+      queue.add(new int[] { 0, 0 });
 
-        for (char gateCode : gateCodes) {
-          char gateKey = Character.toLowerCase(gateCode);
+      while (!queue.isEmpty()) {
+        int[] current = queue.poll();
+        int row = current[0];
+        int col = current[1];
 
-          if (!keys.contains(gateKey)) {
+        for (int i = 0; i < 4; i++) {
+          int nextRow = row + dr[i];
+          int nextCol = col + dc[i];
+
+          if (!canMoveTo(nextRow, nextCol)) {
             continue;
           }
 
-          List<Position> gatePositions = gates.get(gateCode);
+          int[] next = new int[] { nextRow, nextCol };
 
-          if (gatePositions.isEmpty()) {
-            continue;
+          if (isGate(nextRow, nextCol)) {
+            int keyIndex = map[nextRow][nextCol] - 'A';
+
+            if (!hasKey[keyIndex]) {
+              gates.putIfAbsent(keyIndex, new LinkedList<>());
+              gates.get(keyIndex)
+                  .add(next);
+
+              continue;
+            }
           }
 
-          gates.put(gateCode, new ArrayList<>());
+          visited[nextRow][nextCol] = true;
 
-          for (Position position : gatePositions) {
-            map[position.row][position.col] = '.';
+          if (isKey(nextRow, nextCol)) {
+            int keyIndex = map[nextRow][nextCol] - 'a';
+            hasKey[keyIndex] = true;
 
-            bfs(position);
+            if (gates.containsKey(keyIndex)) {
+              Queue<int[]> gatePositions = gates.get(keyIndex);
+
+              while (!gatePositions.isEmpty()) {
+                int[] gate = gatePositions.poll();
+                int gateRow = gate[0];
+                int gateCol = gate[1];
+
+                if (visited[gateRow][gateCol]) {
+                  continue;
+                }
+
+                visited[gateRow][gateCol] = true;
+
+                queue.add(new int[] { gateRow, gateCol });
+              }
+            }
           }
+
+          if (map[nextRow][nextCol] == '$') {
+            docCount++;
+          }
+
+          queue.add(next);
         }
       }
 
       System.out.println(docCount);
     }
-  }
-
-  static void bfs(Position entry) {
-    Queue<Position> queue = new LinkedList<>();
-    visited[entry.row][entry.col] = true;
-
-    queue.add(entry);
-
-    while (!queue.isEmpty()) {
-      Position current = queue.poll();
-
-      for (int i = 0; i < 4; i++) {
-        int nextRow = current.row + dr[i];
-        int nextCol = current.col + dc[i];
-        Position next = new Position(nextRow, nextCol);
-
-        if (!canMoveTo(nextRow, nextCol)) {
-          continue;
-        }
-
-        visited[nextRow][nextCol] = true;
-
-        if (isGate(nextRow, nextCol)) {
-          saveGate(nextRow, nextCol);
-
-          continue;
-        }
-
-        handleCell(nextRow, nextCol);
-        queue.add(next);
-      }
-    }
-  }
-
-  static boolean hasGate() {
-    for (char gateCode : gates.keySet()) {
-      char gateKey = Character.toLowerCase(gateCode);
-
-      if (!keys.contains(gateKey)) {
-        continue;
-      }
-
-      if (!gates.get(gateCode).isEmpty()) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  static void saveGate(int row, int col) {
-    gates.putIfAbsent(map[row][col], new ArrayList<>());
-    gates.get(map[row][col])
-        .add(new Position(row, col));
   }
 
   static boolean isKey(int row, int col) {
@@ -160,34 +136,6 @@ public class Main {
     boolean isOutOfMap = row < 0 || col < 0 || row >= map.length || col >= map[0].length;
 
     return !isOutOfMap && !visited[row][col] && map[row][col] != '*';
-  }
-
-  static void handleCell(int row, int col) {
-    if (isKey(row, col)) {
-      keys.add(map[row][col]);
-    }
-
-    if (map[row][col] == '$') {
-      docCount++;
-      map[row][col] = '.';
-    }
-  }
-
-  static void handleEntry(int row, int col) {
-    if (map[row][col] == '*') {
-      return;
-    }
-
-    if (isGate(row, col)) {
-      saveGate(row, col);
-
-      return;
-    }
-
-    Position entry = new Position(row, col);
-
-    entries.add(entry);
-    handleCell(row, col);
   }
 
 }
