@@ -8,16 +8,15 @@ public class Main {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     int n = Integer.parseInt(br.readLine());
     long[] dp = new long[n + 1];
-    int num = 1;
     dp[0] = 1;
 
-    while (num <= n) {
-      for (int i = num; i <= n; i++) {
-        dp[i] += dp[i - num];
+    for (int i = 1; i <= n; i++) {
+      dp[i] = dp[i - 1];
+
+      if ((i & 1) == 0) {
+        dp[i] += dp[i / 2];
         dp[i] %= MOD;
       }
-
-      num *= 2;
     }
 
     System.out.println(dp[n]);
